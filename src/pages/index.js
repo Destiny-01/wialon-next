@@ -5,6 +5,10 @@ import DriverTable from "../components/table";
 import axios from "axios";
 
 export default function Home({ resource, unit, unit_group }) {
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://wialon-next.vercel.app"
+      : "http://localhost:3000";
   const [resourceId, setResourceId] = useState("");
   const [templateId, setTemplateId] = useState("");
   const [unitId, setUnitId] = useState("");
@@ -47,7 +51,7 @@ export default function Home({ resource, unit, unit_group }) {
         data: { from: 0, to: 49, level: 0, unitInfo: 1 },
       },
     };
-    const res = await axios.post("http://localhost:3000/api/wialon", {
+    const res = await axios.post(`${baseUrl}/api/wialon`, {
       params,
       table,
     });
@@ -251,7 +255,7 @@ export default function Home({ resource, unit, unit_group }) {
 
 export async function getServerSideProps() {
   try {
-    const res = await axios.get("http://localhost:3000/api/wialon");
+    const res = await axios.get(`${baseUrl}/api/wialon`);
     console.log(res);
     return {
       props: {
