@@ -19,7 +19,7 @@ function calculateSpeed(distance, timeInSeconds) {
   return speed.toFixed(2);
 }
 
-export const DriverTable = ({ tableData }) => {
+const DriverTable = ({ tableData }) => {
   return (
     <div>
       <div>
@@ -99,3 +99,5 @@ export const DriverTable = ({ tableData }) => {
     </div>
   );
 };
+
+export default DriverTable;
