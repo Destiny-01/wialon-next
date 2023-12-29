@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useRef, useState } from "react";
-import { DriverTable } from "./table";
+import DriverTable from "./table";
 import axios from "axios";
 
 export default function Home({ resource, unit, unit_group }) {
