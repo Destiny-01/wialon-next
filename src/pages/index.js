@@ -255,6 +255,10 @@ export default function Home({ resource, unit, unit_group }) {
 
 export async function getServerSideProps() {
   try {
+    const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://wialon-next.vercel.app"
+        : "http://localhost:3000";
     const res = await axios.get(`${baseUrl}/api/wialon`);
     console.log(res);
     return {
