@@ -1,0 +1,32 @@
+body,
+html {
+  width: 100%;
+}
+
+table {
+  background-color: transparent;
+  border: none;
+}
+
+thead {
+  background-color: #d2d2c6;
+}
+
+th,
+td {
+  white-space: nowrap;
+  padding: 10px;
+  text-align: center !important;
+  color: black !important;
+}
+
+.table > :not(caption) > * > * {
+  background-color: transparent;
+  border: none;
+}
+
+h1,
+p {
+  margin-top: 64px;
+  margin-bottom: 16px;
+}
