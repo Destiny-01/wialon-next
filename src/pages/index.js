@@ -97,7 +97,7 @@ export default function Home({ resource, unit, unit_group }) {
   };
 
   const onOptionChangeHandlerUnit = (event) => {
-    setUnitGroup(event.target.value.split(','));
+    setUnitGroup(event.target.value?.split(','));
     // setUnitId(event.target.value);
   };
 
