@@ -30,3 +30,10 @@ p {
   margin-top: 64px;
   margin-bottom: 16px;
 }
+
+.scrollable-table {
+  max-height: 350px; /* Adjust this value as needed */
+  overflow-y: auto;
+  overflow-x: auto;
+  max-width: 100%;
+}
