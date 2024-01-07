@@ -21,6 +21,7 @@ export default function Home({ resource, unit, unit_group }) {
   const [report, setReport] = useState('');
   const [interval, setInterval] = useState('');
   const [tableData, setTableData] = useState([]);
+  let response = [];
 
   const onOptionChangeHandlerInterval = (event) => {
     setInterval(event.target.value);
@@ -34,20 +35,46 @@ export default function Home({ resource, unit, unit_group }) {
     // const reportObjectSecId = 0;
     //const interval = interval.value;
 
-    const res = await axios.post(`${baseUrl}/api/wialonGroup`, {
-      resourceId,
-      templateId,
-      unitGroup,
-      from: fromRef.current,
-      to: toRef.current,
-    });
-    console.log(res.data);
+    console.log(unitGroup);
+    for (let i = 0; i < unitGroup.length; i++) {
+      console.log('==========i=========', i);
+      const params = {
+        reportResourceId: resourceId,
+        reportTemplateId: parseInt(templateId),
+        reportTemplate: null,
+        reportObjectId: parseInt(unitGroup[i]),
+        reportObjectSecId: 0,
+        interval: { flags: 16777216, from: fromRef.current, to: toRef.current },
+        remoteExec: 1,
+      };
 
-    // call(params);
+      const table = {
+        tableIndex: 0,
+        config: {
+          type: 'range',
+          data: { from: 0, to: 49, level: 0, unitInfo: 1 },
+        },
+      };
+
+      const res = await axios.post(`${baseUrl}/api/wialon`, { params, table });
+      response.push(res.data.response);
+    }
+
+    //console.log(response);
+
+    // const res = await axios.post(`${baseUrl}/api/wialonGroup`, {
+    //   resourceId,
+    //   templateId,
+    //   unitGroup,
+    //   from: fromRef.current,
+    //   to: toRef.current,
+    // });
+    // console.log(res.data);
+
+    // // call(params);
     setLoading(false);
-    let response = [].concat(...res.data.response);
-    console.log(response);
-    setTableData(response);
+    let data = [].concat(...response).filter(Boolean);
+    setTableData(data);
   };
 
   const convertToUnixTimestamp = (milliseconds) => {
