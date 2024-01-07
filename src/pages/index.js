@@ -35,9 +35,9 @@ export default function Home({ resource, unit, unit_group }) {
     // const reportObjectSecId = 0;
     //const interval = interval.value;
 
-    console.log(unitGroup);
+    //console.log(unitGroup);
     for (let i = 0; i < unitGroup.length; i++) {
-      console.log('==========i=========', i);
+      //console.log('==========i=========', i);
       const params = {
         reportResourceId: resourceId,
         reportTemplateId: parseInt(templateId),
