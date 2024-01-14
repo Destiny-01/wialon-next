@@ -9,75 +9,51 @@ export default async function handler(req, res) {
   };
 
   const session = await wialon(opts).session;
-  if (req.method === 'GET') {
-    let resource, unit, unit_group;
 
-    const paramsResource = {
-      spec: {
-        itemsType: 'avl_resource',
-        propType: 'propitemname',
-        propName: 'reporttemplates',
-        propValueMask: '*',
-        sortType: 'sys_name',
-      },
-      force: 1,
-      flags: 8193,
-      from: 0,
-      to: 0,
-    };
-
-    const paramsUnit = {
-      spec: {
-        itemsType: 'avl_unit',
-        propType: 'propitemname',
-        propName: 'reporttemplates',
-        propValueMask: '*',
-        sortType: 'sys_name',
-      },
-      force: 1,
-      flags: 8193,
-      from: 0,
-      to: 0,
-    };
-
-    const paramsUnitGroup = {
-      spec: {
-        itemsType: 'avl_unit_group',
-        propType: 'propitemname',
-        propName: 'reporttemplates',
-        propValueMask: '*',
-        sortType: 'sys_name',
-      },
-      force: 1,
-      flags: 8193,
-      from: 0,
-      to: 0,
+  if (req.method === 'POST' && req.body.first === 'wialon_first') {
+    let response;
+    const params = {
+      params: [
+        {
+          svc: 'core/search_items',
+          params: {
+            spec: {
+              itemsType: 'avl_resource',
+              propName: '*',
+              propValueMask: '*',
+              sortType: '',
+            },
+            force: 1,
+            flags: 1,
+            from: 0,
+            to: 4294967295,
+          },
+        },
+        {
+          svc: 'core/update_data_flags',
+          params: {
+            spec: [
+              { type: 'type', data: 'avl_resource', flags: 33281, mode: 1 },
+            ],
+          },
+        },
+        {
+          svc: 'core/update_data_flags',
+          params: {
+            spec: [
+              { type: 'type', data: 'avl_resource', flags: 8197, mode: 1 },
+            ],
+          },
+        },
+      ],
+      flags: 0,
     };
 
     await session
-      .request('core/search_items', paramsResource)
+      .request('core/batch', params)
       .then(async function (data) {
-        resource = data.items;
-      })
-      .catch(function (err) {
-        console.log(err);
-        return;
-      });
-
-    await session
-      .request('core/search_items', paramsUnit)
-      .then(async function (data) {
-        unit = data.items;
-      })
-      .catch(function (err) {
-        console.log(err);
-        return;
-      });
-
-    await session
-      .request('core/search_items', paramsUnitGroup)
-      .then(async function (data) {
-        unit_group = data.items;
+        response = data;
+        ///console.log(data);
       })
       .catch(function (err) {
         console.log(err);
@@ -85,13 +61,11 @@ export default async function handler(req, res) {
       });
 
     return res.status(200).json({
-      // call,
-      resource,
-      unit,
-      unit_group,
+      response,
     });
-  } else if (req.method === 'POST') {
+  } else if (req.method === 'POST' && req.body.first === 'wialon_second') {
     let response;
+    console.log('starting the request');
 
     await session
       .request('report/exec_report', req.body.params)
@@ -100,6 +74,22 @@ export default async function handler(req, res) {
         console.log(err);
         return;
         // log.innerHTML = JSON.stringify(err);
+      });
+
+    await session
+      .request('report/get_report_status', {})
+      .then(async function (data) {})
+      .catch(function (err) {
+        console.log(err);
+        return;
+      });
+
+    await session
+      .request('events/check_updates', { detalization: 3 })
+      .then(async function (data) {})
+      .catch(function (err) {
+        console.log(err);
+        return;
       });
 
     await session

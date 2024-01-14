@@ -4,130 +4,208 @@ import { useEffect, useRef, useState } from 'react';
 import DriverTable from '../components/table';
 import axios from 'axios';
 
-export default function Home({ resource, unit, unit_group }) {
+export default function Home({ resource, object, template }) {
+  // console.log('=======resource=====', resource);
+  // console.log('=======object=====', object);
+  // console.log('=======template=====', template);
   const baseUrl =
     process.env.NODE_ENV === 'production'
       ? 'https://wialon-next.vercel.app'
       : 'http://localhost:3000';
   const [resourceId, setResourceId] = useState('');
+  const [report, setReport] = useState([]);
+  const [group, setGroup] = useState([]);
   const [templateId, setTemplateId] = useState('');
-  const [unitId, setUnitId] = useState('');
+  const [groupId, setGroupId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [unitGroup, setUnitGroup] = useState([]);
-  const fromRef = useRef(null);
-  const toRef = useRef(null);
-  const [resourceName, setResoureName] = useState('');
+  // const [unitId, setUnitId] = useState('');
 
-  const [report, setReport] = useState('');
-  const [interval, setInterval] = useState('');
-  const [tableData, setTableData] = useState([]);
-  let response = [];
+  // const [unitGroup, setUnitGroup] = useState([]);
+  // const fromRef = useRef(null);
+  // const toRef = useRef(null);
+  // const [resourceName, setResoureName] = useState('');
 
-  const onOptionChangeHandlerInterval = (event) => {
-    setInterval(event.target.value);
-  };
-
-  const toggleShowTable = async () => {
-    setLoading(true);
-    // const reportResourceId = res.value;
-    // const reportTemplateId = templ.value;
-    // const reportObjectId = units.value;
-    // const reportObjectSecId = 0;
-    //const interval = interval.value;
-
-    //console.log(unitGroup);
-    for (let i = 0; i < unitGroup.length; i++) {
-      //console.log('==========i=========', i);
-      const params = {
-        reportResourceId: resourceId,
-        reportTemplateId: parseInt(templateId),
-        reportTemplate: null,
-        reportObjectId: parseInt(unitGroup[i]),
-        reportObjectSecId: 0,
-        interval: { flags: 16777216, from: fromRef.current, to: toRef.current },
-        remoteExec: 1,
-      };
-
-      const table = {
-        tableIndex: 0,
-        config: {
-          type: 'range',
-          data: { from: 0, to: 49, level: 0, unitInfo: 1 },
-        },
-      };
-
-      const res = await axios.post(`${baseUrl}/api/wialon`, { params, table });
-      response.push(res.data.response);
-    }
-
-    //console.log(response);
-
-    // const res = await axios.post(`${baseUrl}/api/wialonGroup`, {
-    //   resourceId,
-    //   templateId,
-    //   unitGroup,
-    //   from: fromRef.current,
-    //   to: toRef.current,
-    // });
-    // console.log(res.data);
-
-    // // call(params);
-    setLoading(false);
-    let data = [].concat(...response).filter(Boolean);
-    setTableData(data);
-  };
-
-  const convertToUnixTimestamp = (milliseconds) => {
-    // Specify the date and time
-    // const dateString = '2023-12-22 00:00:00';
-    const dateObject = new Date();
-
-    const unixTimestamp = Math.floor(
-      (dateObject.getTime() - milliseconds) / 1000
-    );
-    return unixTimestamp;
-  };
+  // const [report, setReport] = useState('');
+  // const [interval, setInterval] = useState('');
+  // const [tableData, setTableData] = useState([]);
+  // let response = [];
 
   const onOptionChangeHandler = (event) => {
-    setResoureName(event.target.value);
+    setResourceId(event.target.value);
   };
 
   const onOptionChangeHandlerTemplate = (event) => {
     setTemplateId(event.target.value);
   };
 
-  const onOptionChangeHandlerUnit = (event) => {
-    setUnitGroup((event.target.value || '').split(','));
-    // setUnitId(event.target.value);
+  const onOptionChangeHandlerGroup = (event) => {
+    setGroupId(event.target.value);
   };
 
   useEffect(() => {
-    resource.filter((item) => {
-      if (item.nm === resourceName) {
-        setReport(item.rep);
-        setResourceId(item.id);
-      }
-    });
-    //console.log(interval);
-
-    switch (interval) {
-      case '1-day':
-        fromRef.current = convertToUnixTimestamp(86400000);
-        toRef.current = convertToUnixTimestamp(0);
-        break;
-      case '1-week':
-        fromRef.current = convertToUnixTimestamp(604800000);
-        toRef.current = convertToUnixTimestamp(0);
-        break;
-      case '1-month':
-        fromRef.current = convertToUnixTimestamp(2592000000);
-        toRef.current = convertToUnixTimestamp(0);
-        break;
-      default:
-        fromRef.current = convertToUnixTimestamp(86400000);
-        toRef.current = convertToUnixTimestamp(0);
+    if (resourceId) {
+      template.filter((item) => {
+        if (item.i === parseInt(resourceId)) {
+          setReport(item.d.rep);
+        }
+      });
     }
-  }, [resource, interval, setResourceId, resourceName, fromRef, toRef]);
+
+    if (templateId) {
+      object.filter((item) => {
+        if (item.i === parseInt(resourceId)) {
+          console.log('=====ObjectItem======', item);
+          setGroup(item.d.drvrsgr);
+        }
+      });
+    }
+  }, [resourceId, template, templateId, object]);
+
+  console.log('======resourceId======', resourceId, typeof resourceId);
+  console.log('======groupId======', groupId, typeof groupId);
+  console.log('======templateId======', parseInt(groupId), typeof templateId);
+  // console.log('======report======', report);
+  // console.log('======group======', group);
+  // console.log('======groupId======', groupId);
+
+  const toggleShowTable = async () => {
+    setLoading(true);
+
+    const params = {
+      reportResourceId: parseInt(resourceId),
+      reportTemplateId: parseInt(templateId),
+      reportTemplate: null,
+      reportObjectId: parseInt(resourceId),
+      reportObjectSecId: groupId,
+      interval: { flags: 16777224, from: 0, to: 1 },
+      remoteExec: 1,
+    };
+    // "{"params":{"reportResourceId":"21009229","reportTemplateId":3,"reportTemplate":null,"reportObjectId":21009229,"reportObjectSecId":"1","interval":{"flags":16777224,"from":0,"to":1},"remoteExec":1},"table":{"tableIndex":-1,"config":{"type":"range","data":{"from":0,"to":4,"level":0,"unitInfo":1}}},"first":"wialon_second"}"
+
+    const table = {
+      tableIndex: -1,
+      config: {
+        type: 'range',
+        data: { from: 0, to: 4, level: 0, unitInfo: 1 },
+      },
+    };
+
+    const first = 'wialon_second';
+
+    const res = await axios.post(`${baseUrl}/api/wialon`, {
+      params,
+      table,
+      first,
+    });
+    console.log('======res======', res);
+    setLoading(false);
+  };
+
+  // const onOptionChangeHandlerInterval = (event) => {
+  //   setInterval(event.target.value);
+  // };
+
+  // const toggleShowTable = async () => {
+  //   setLoading(true);
+  //   // const reportResourceId = res.value;
+  //   // const reportTemplateId = templ.value;
+  //   // const reportObjectId = units.value;
+  //   // const reportObjectSecId = 0;
+  //   //const interval = interval.value;
+
+  //   //console.log(unitGroup);
+
+  //   //console.log('==========i=========', i);
+  //   const params = {
+  //     reportResourceId: resourceId,
+  //     reportTemplateId: parseInt(templateId),
+  //     reportTemplate: null,
+  //     reportObjectId: parseInt(21009229),
+  //     reportObjectSecId: 1,
+  //     interval: { flags: 16777216, from: fromRef.current, to: toRef.current },
+  //     remoteExec: 1,
+  //   };
+
+  //   const table = {
+  //     tableIndex: 0,
+  //     config: {
+  //       type: 'range',
+  //       data: { from: 0, to: 49, level: 0, unitInfo: 1 },
+  //     },
+  //   };
+
+  //   const res = await axios.post(`${baseUrl}/api/wialon`, { params, table });
+  //   response.push(res.data.response);
+
+  //   //console.log(response);
+
+  //   // const res = await axios.post(`${baseUrl}/api/wialonGroup`, {
+  //   //   resourceId,
+  //   //   templateId,
+  //   //   unitGroup,
+  //   //   from: fromRef.current,
+  //   //   to: toRef.current,
+  //   // });
+  //   // console.log(res.data);
+
+  //   // // call(params);
+  //   setLoading(false);
+  //   let data = [].concat(...response).filter(Boolean);
+  //   console.log('======data======', data);
+  //   //setTableData(data);
+  // };
+
+  // const convertToUnixTimestamp = (milliseconds) => {
+  //   // Specify the date and time
+  //   // const dateString = '2023-12-22 00:00:00';
+  //   const dateObject = new Date();
+
+  //   const unixTimestamp = Math.floor(
+  //     (dateObject.getTime() - milliseconds) / 1000
+  //   );
+  //   return unixTimestamp;
+  // };
+
+  // useEffect(() => {
+  //   if (resourceId) {
+  //   }
+  //   resource.filter((item) => {
+  //     if (item.id === resourceId) {
+  //       setResoureName(item.nm);
+  //     }
+  //   });
+  // }
+  // console.log(resourceId);
+  // console.log(resourceName);
+  // }, [resourceId]);
+
+  // useEffect(() => {
+  //   resource.filter((item) => {
+  //     if (item.nm === resourceName) {
+  //       setReport(item.rep);
+  //       setResourceId(item.id);
+  //     }
+  //   });
+  //   //console.log(interval);
+
+  //   switch (interval) {
+  //     case '1-day':
+  //       fromRef.current = convertToUnixTimestamp(86400000);
+  //       toRef.current = convertToUnixTimestamp(0);
+  //       break;
+  //     case '1-week':
+  //       fromRef.current = convertToUnixTimestamp(604800000);
+  //       toRef.current = convertToUnixTimestamp(0);
+  //       break;
+  //     case '1-month':
+  //       fromRef.current = convertToUnixTimestamp(2592000000);
+  //       toRef.current = convertToUnixTimestamp(0);
+  //       break;
+  //     default:
+  //       fromRef.current = convertToUnixTimestamp(86400000);
+  //       toRef.current = convertToUnixTimestamp(0);
+  //   }
+  // }, [resource, interval, setResourceId, resourceName, fromRef, toRef]);
   return (
     <>
       <Head>
@@ -156,7 +234,7 @@ export default function Home({ resource, unit, unit_group }) {
                       onChange={onOptionChangeHandler}>
                       <option>Please choose one option</option>
                       {resource.map((item) => (
-                        <option value={item.nm} key={item.id}>
+                        <option value={item.id} key={item.id}>
                           {item.nm}
                         </option>
                       ))}
@@ -194,13 +272,14 @@ export default function Home({ resource, unit, unit_group }) {
                     <select
                       id='units'
                       className='js-example-templating js-persons form-control'
-                      onChange={onOptionChangeHandlerUnit}>
+                      onChange={onOptionChangeHandlerGroup}>
                       <option>Please choose one option</option>
-                      {unit_group.map((item) => (
-                        <option value={item.u} key={item.id}>
-                          {item.nm}
-                        </option>
-                      ))}
+                      {group &&
+                        Object.keys(group).map((key) => (
+                          <option value={group[key].id} key={group[key].id}>
+                            {group[key].n}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 </div>
@@ -214,7 +293,8 @@ export default function Home({ resource, unit, unit_group }) {
                     <select
                       id='interval'
                       className='js-example-templating js-persons form-control'
-                      onChange={onOptionChangeHandlerInterval}>
+                      // onChange={onOptionChangeHandlerInterval}
+                    >
                       <option
                         value='1-day'
                         title='60 sec * 60 minutes * 24 hours = 86400 sec = 1 day'>
@@ -248,11 +328,11 @@ export default function Home({ resource, unit, unit_group }) {
             </div>
             <div id='log'></div>
             <div>
-              {tableData?.length > 0 ? (
+              {/* {tableData?.length > 0 ? (
                 <DriverTable tableData={tableData} />
               ) : (
                 <p>No data generated</p>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -267,13 +347,14 @@ export async function getServerSideProps() {
       process.env.NODE_ENV === 'production'
         ? 'https://wialon-next.vercel.app'
         : 'http://localhost:3000';
-    const res = await axios.get(`${baseUrl}/api/wialon`);
-    // console.log(res);
+    const first = 'wialon_first';
+    const res = await axios.post(`${baseUrl}/api/wialon`, { first });
+    //console.log(res);
     return {
       props: {
-        resource: res.data.resource,
-        unit: res.data.unit,
-        unit_group: res.data.unit_group,
+        resource: res.data.response[0].items,
+        object: res.data.response[1],
+        template: res.data.response[2],
       },
     };
   } catch (err) {
@@ -281,8 +362,8 @@ export async function getServerSideProps() {
     return {
       props: {
         resource: [],
-        unit: [],
-        unit_group: '',
+        object: [],
+        template: [],
       },
     };
   }
