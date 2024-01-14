@@ -1,27 +1,27 @@
-const wialon = require('wialon');
+const wialon = require("wialon");
 
 export default async function handler(req, res) {
   const opts = {
     authz: {
       token:
-        'cff41ecd2f9615c24a95c8e9d906cde9DFC283DDD9407133F3B10D5E589A8419681732CF',
+        "cff41ecd2f9615c24a95c8e9d906cde9DFC283DDD9407133F3B10D5E589A8419681732CF",
     },
   };
 
   const session = await wialon(opts).session;
 
-  if (req.method === 'POST' && req.body.first === 'wialon_first') {
+  if (req.method === "POST" && req.body.first === "wialon_first") {
     let response;
     const params = {
       params: [
         {
-          svc: 'core/search_items',
+          svc: "core/search_items",
           params: {
             spec: {
-              itemsType: 'avl_resource',
-              propName: '*',
-              propValueMask: '*',
-              sortType: '',
+              itemsType: "avl_resource",
+              propName: "*",
+              propValueMask: "*",
+              sortType: "",
             },
             force: 1,
             flags: 1,
@@ -30,18 +30,18 @@ export default async function handler(req, res) {
           },
         },
         {
-          svc: 'core/update_data_flags',
+          svc: "core/update_data_flags",
           params: {
             spec: [
-              { type: 'type', data: 'avl_resource', flags: 33281, mode: 1 },
+              { type: "type", data: "avl_resource", flags: 33281, mode: 1 },
             ],
           },
         },
         {
-          svc: 'core/update_data_flags',
+          svc: "core/update_data_flags",
           params: {
             spec: [
-              { type: 'type', data: 'avl_resource', flags: 8197, mode: 1 },
+              { type: "type", data: "avl_resource", flags: 8197, mode: 1 },
             ],
           },
         },
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
     };
 
     await session
-      .request('core/batch', params)
+      .request("core/batch", params)
       .then(async function (data) {
         response = data;
         ///console.log(data);
@@ -63,13 +63,15 @@ export default async function handler(req, res) {
     return res.status(200).json({
       response,
     });
-  } else if (req.method === 'POST' && req.body.first === 'wialon_second') {
+  } else if (req.method === "POST" && req.body.first === "wialon_second") {
     let response;
-    console.log('starting the request');
+    console.log("starting the request", req.body.params);
 
     await session
-      .request('report/exec_report', req.body.params)
-      .then(function (data) {})
+      .request("report/exec_report", req.body.params)
+      .then(function (data) {
+        console.log(data);
+      })
       .catch(function (err) {
         console.log(err);
         return;
@@ -77,52 +79,100 @@ export default async function handler(req, res) {
       });
 
     await session
-      .request('report/get_report_status', {})
-      .then(async function (data) {})
-      .catch(function (err) {
-        console.log(err);
-        return;
-      });
+      .request("report/get_report_status", {})
 
-    await session
-      .request('events/check_updates', { detalization: 3 })
-      .then(async function (data) {})
-      .catch(function (err) {
-        console.log(err);
-        return;
-      });
-
-    await session
-      .request('report/get_report_status', {})
-      .then(async function (data) {})
-      .catch(function (err) {
-        console.log(err);
-        return;
-      });
-
-    await session
-      .request('report/apply_report_result', {})
-      .then(async function (data) {})
-      .catch(function (err) {
-        console.log(err);
-        return;
-      });
-
-    await session
-      .request('report/select_result_rows', req.body.table)
       .then(async function (data) {
         console.log(data);
-        response = data;
       })
       .catch(function (err) {
         console.log(err);
         return;
       });
 
+    await session
+      .request("events/check_updates", { detalization: 3 })
+      .then(async function (data) {
+        console.log(data);
+      })
+      .catch(function (err) {
+        console.log(err);
+        return;
+      });
+
+    await session
+      .request("report/get_report_status", {})
+      .then(async function (data) {
+        console.log(data);
+      })
+      .catch(function (err) {
+        console.log(err);
+        return;
+      });
+
+    await session
+      .request("report/apply_report_result", {})
+      .then(async function (data) {
+        console.log(data);
+      })
+      .catch(function (err) {
+        console.log(err);
+        return;
+      });
+
+    const table = (id) => ({
+      tableIndex: id,
+      config: {
+        type: "range",
+        data: { from: 0, to: 30, level: 0, unitInfo: 1 },
+      },
+    });
+
+    const tables = await Promise.allSettled([
+      makeRequest(session, table(-1)),
+      makeRequest(session, table(0)),
+      makeRequest(session, table(1)),
+      makeRequest(session, table(2)),
+      makeRequest(session, table(3)),
+      // makeRequest(session, table(4)),
+      // makeRequest(session, table(5)),
+    ]);
+
+    function makeRequest(session, table) {
+      return new Promise(async (resolve) => {
+        try {
+          const result = await session.request(
+            "report/select_result_rows",
+            table
+          );
+          resolve({ status: "fulfilled", value: result });
+        } catch (error) {
+          resolve({ status: "rejected", reason: error.message });
+        }
+      });
+    }
+
+    const output = tables.map(
+      (table) => table.status === "fulfilled" && table.value.value
+    );
+
+    console.log(output);
+
+    // await session
+    //   .request('report/select_result_rows', req.body.table)
+    //   .then(async function (data) {
+    //     console.log(data);
+    //     response = data;
+    //   })
+    //   .catch(function (err) {
+    //     console.log(err);
+    //     return;
+    //   });
+
     return res.status(200).json({
-      response,
+      // response,
+      response: output,
     });
   } else {
-    return res.status(200).json({ error: 'Invalid route' });
+    return res.status(400).json({ error: "Invalid route" });
   }
 }
