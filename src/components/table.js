@@ -22,7 +22,10 @@ function calculateSpeed(distance, timeInSeconds) {
   return speed.toFixed(2);
 }
 
+
 const DriverTable = ({ tableData }) => {
+
+  console.log(tableData);
   return (
     <div>
       <div>
@@ -63,11 +66,20 @@ const DriverTable = ({ tableData }) => {
               </tr>
             </thead>
             <tbody>
-              {tableData.map((table, i) => (
+              {tableData[1].map((table, i) => (
+                
                 <tr key={i}>
-                  <th scope="row">{table.c[18] || "----"}</th>
-                  <td>{table.c[9] || "----"}</td>
-                  <td>
+                  <th scope="row">{table.c[0] || "----"}</th>
+                  <td>{table.c[11] || "----"}</td>
+                  <td>{table.c[3] || "----"}</td>
+                   <td>{tableData[3].map((table1, j) =>(
+                    <span key={j}>{table1.c[2].t}</span>
+                  ))}</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>{table.c[7] || "----"}hrs</td>
+                  
+                  {/* <td>
                     {(
                       (parseFloat(table.c[16]) || 0) -
                       (parseFloat(table.c[15]) || 0)
@@ -95,7 +107,7 @@ const DriverTable = ({ tableData }) => {
                       ).toFixed(2) * 3600
                     )}
                   </td>
-                  <td>{table.c[6] || "0 km/h"}</td>
+                  <td>{table.c[6] || "0 km/h"}</td> */}
                 </tr>
               ))}
             </tbody>

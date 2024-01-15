@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useRef, useState } from "react";
-import DriverTable from "../components/table";
+import  DriverTable  from "../components/table";
 import axios from "axios";
 
 export default function Home({ resource, object, template }) {
@@ -18,6 +18,7 @@ export default function Home({ resource, object, template }) {
   const [templateId, setTemplateId] = useState("");
   const [groupId, setGroupId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tableData, setTableData] = useState([])
   // const [unitId, setUnitId] = useState('');
 
   // const [unitGroup, setUnitGroup] = useState([]);
@@ -94,6 +95,7 @@ export default function Home({ resource, object, template }) {
       remoteExec: 1,
     };
     // "{"params":{"reportResourceId":"21009229","reportTemplateId":3,"reportTemplate":null,"reportObjectId":21009229,"reportObjectSecId":"1","interval":{"flags":16777224,"from":0,"to":1},"remoteExec":1},"table":{"tableIndex":-1,"config":{"type":"range","data":{"from":0,"to":4,"level":0,"unitInfo":1}}},"first":"wialon_second"}"
+    
 
     const table = {
       tableIndex: -1,
@@ -115,13 +117,16 @@ export default function Home({ resource, object, template }) {
         console.log(err);
         setLoading(false);
       });
+      setTableData(res.data.response);
     console.log("======res======", res);
     setLoading(false);
+    
   };
 
   const onOptionChangeHandlerInterval = (event) => {
     setInterval(event.target.value);
   };
+  console.log ("table data",tableData);
 
   // const toggleShowTable = async () => {
   //   setLoading(true);
@@ -353,11 +358,11 @@ export default function Home({ resource, object, template }) {
             </div>
             <div id="log"></div>
             <div>
-              {/* {tableData?.length > 0 ? (
-                <DriverTable tableData={tableData} />
-              ) : (
-                <p>No data generated</p>
-              )} */}
+                 {tableData?.length > 0 ? (
+                  <DriverTable tableData={tableData} />
+                ) : (
+                  <p>No data generated</p>
+                )} 
             </div>
           </div>
         </div>
