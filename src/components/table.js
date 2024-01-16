@@ -23,6 +23,7 @@ function calculateSpeed(distance, timeInSeconds) {
 }
 
 const DriverTable = ({ tableData }) => {
+  console.log(tableData);
   return (
     <div>
       <div>
@@ -63,39 +64,21 @@ const DriverTable = ({ tableData }) => {
               </tr>
             </thead>
             <tbody>
-              {tableData.map((table, i) => (
+              {tableData[1].map((table, i) => (
                 <tr key={i}>
-                  <th scope="row">{table.c[18] || "----"}</th>
-                  <td>{table.c[9] || "----"}</td>
-                  <td>
-                    {(
-                      (parseFloat(table.c[16]) || 0) -
-                      (parseFloat(table.c[15]) || 0)
-                    ).toFixed(2) || "----"}{" "}
-                    km
-                  </td>
+                  <th scope="row">{table.c[0] || "----"}</th>
+                  <td>{table.c[11] || "----"}</td>
+                  <td>{table.c[3] || "----"}</td>
+                  <td>{table.c[12]?.t || "----"}</td>
+                  <td>{table.c[8] || "----"}</td>
+                  <td>{table.c[10] || "----"}</td>
                   <td>{table.c[7] || "----"}</td>
-                  <td>---</td>
-                  <td>---</td>
-                  <td>{timeToSeconds(table.c[13]) || 0}</td>
-                  <td>
-                    {calculateSpeed(
-                      parseFloat(table.c[14]),
-                      timeToSeconds(table.c[13])
-                    ) || 0}{" "}
-                    km/h
-                  </td>
-                  <td>---</td>
-                  <td>---</td>
-                  <td>
-                    {parseInt(
-                      (
-                        (parseFloat(table.c[16]) - parseFloat(table.c[15])) /
-                          parseFloat(table.c[6]) || 0
-                      ).toFixed(2) * 3600
-                    )}
-                  </td>
-                  <td>{table.c[6] || "0 km/h"}</td>
+                  <td>{table.c[10] || "----"}</td>
+                  <td>{table.c[9] || "----"}</td>
+                  <td>{table.c[9] || "----"}</td>
+                  <td>{table.c[7] || "----"}</td>
+                  <td>{table.c[9] || "----"}</td>
+                 
                 </tr>
               ))}
             </tbody>
