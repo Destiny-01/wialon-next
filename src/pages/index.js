@@ -18,6 +18,7 @@ export default function Home({ resource, object, template }) {
   const [templateId, setTemplateId] = useState("");
   const [groupId, setGroupId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tableData, setTableData] = useState([]);
   // const [unitId, setUnitId] = useState('');
 
   // const [unitGroup, setUnitGroup] = useState([]);
@@ -115,6 +116,7 @@ export default function Home({ resource, object, template }) {
         console.log(err);
         setLoading(false);
       });
+      setTableData(res.data.response)
     console.log("======res======", res);
     setLoading(false);
   };
@@ -122,6 +124,7 @@ export default function Home({ resource, object, template }) {
   const onOptionChangeHandlerInterval = (event) => {
     setInterval(event.target.value);
   };
+  console.log(tableData);
 
   // const toggleShowTable = async () => {
   //   setLoading(true);
@@ -353,11 +356,11 @@ export default function Home({ resource, object, template }) {
             </div>
             <div id="log"></div>
             <div>
-              {/* {tableData?.length > 0 ? (
+               {tableData?.length > 0 ? (
                 <DriverTable tableData={tableData} />
               ) : (
                 <p>No data generated</p>
-              )} */}
+              )}
             </div>
           </div>
         </div>
