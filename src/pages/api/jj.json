@@ -1,0 +1,19 @@
+{
+  "table": "front_stats",
+  "stat": {
+    "feature_type": 4469,
+    "action_type": 446901,
+    "stat_value": "{\"module\":\"Отчеты\",\"period\":3455999,\"currentInterval\":null,\"datePickerWasClicked\":1}",
+    "time": 1706041291,
+    "service_id": 0,
+    "service_name": "",
+    "user_id": 27510180,
+    "user_name": "GigaDev",
+    "account_id": 13855274,
+    "account_name": "gigasecintl",
+    "unit_id": 0,
+    "unit_name": "",
+    "count": 0,
+    "duration": 0
+  }
+}

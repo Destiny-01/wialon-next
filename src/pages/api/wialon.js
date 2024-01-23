@@ -68,17 +68,6 @@ export default async function handler(req, res) {
     console.log('starting the request', req.body.params);
 
     await session
-      .request('core/write_log', req.body.params)
-      .then(function (data) {
-        console.log(data);
-      })
-      .catch(function (err) {
-        console.log(err);
-        return;
-        // log.innerHTML = JSON.stringify(err);
-      });
-
-    await session
       .request('report/exec_report', req.body.params)
       .then(function (data) {
         console.log(data);
