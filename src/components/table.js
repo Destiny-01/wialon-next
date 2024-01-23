@@ -22,8 +22,15 @@ function calculateSpeed(distance, timeInSeconds) {
   return speed.toFixed(2);
 }
 
+
 const DriverTable = ({ tableData }) => {
   console.log(tableData);
+  const combinedData = tableData[1]?.map((table1, i) => ({
+    table1,
+    table2: tableData[3]?.[i] || {},
+  }));
+  
+  combinedData.sort((a, b) => a.table1.c[0].localeCompare(b.table1.c[0]));
   return (
     <div>
       <div>
@@ -64,23 +71,44 @@ const DriverTable = ({ tableData }) => {
               </tr>
             </thead>
             <tbody>
-              {tableData[1].map((table, i) => (
+              {/* {tableData[1]?.map((table1, i) => (
                 <tr key={i}>
-                  <th scope="row">{table.c[0] || "----"}</th>
-                  <td>{table.c[11] || "----"}</td>
-                  <td>{table.c[3] || "----"}</td>
-                  <td>{table.c[12]?.t || "----"}</td>
-                  <td>{table.c[8] || "----"}</td>
-                  <td>{table.c[10] || "----"}</td>
-                  <td>{table.c[7] || "----"}</td>
-                  <td>{table.c[10] || "----"}</td>
-                  <td>{table.c[9] || "----"}</td>
-                  <td>{table.c[9] || "----"}</td>
-                  <td>{table.c[7] || "----"}</td>
-                  <td>{table.c[9] || "----"}</td>
+                  <th scope="row">{table1.c[0] || "----"}</th>
+                  <td>{table1.c[5] || "----"}</td>
+                  <td>{table1.c[2] || "----"}</td>
+                  <td>{table1.c[6]?.t || "----"}</td>
+                  {tableData[3]?.[i] && (
+                    <>
+                    <td>{tableData[3][i].c[4] || "----"}</td>
+          <td>{tableData[3][i].c[4] || "----"}</td>
+          <td>{tableData[3][i].c[7] || "----"}</td>
+          <td>{tableData[3][i].c[4] || "----"}</td>
+                    
+                    </>
+                  )}
+                  <td>{  "----"}</td>
+                  <td>{ "----"}</td>
+                  <td>{ "----"}</td>
+                  <td>{ "----"}</td>
                  
                 </tr>
-              ))}
+              ))} */}
+              {combinedData.map(({ table1, table2 }, i) => (
+    <tr key={i}>
+      <th scope="row">{table1.c[0] || "----"}</th>
+      <td>{table1.c[5] || "----"}</td>
+      <td>{table1.c[2] || "----"}</td>
+      <td>{table1.c[6]?.t || "----"}</td>
+      <td>{table2.c[4] || "----"}</td>
+      <td>{table2.c[4] || "----"}</td>
+      <td>{table2.c[7] || "----"}</td>
+      <td>{table2.c[4] || "----"}</td>
+      <td>{"----"}</td>
+      <td>{"----"}</td>
+      <td>{"----"}</td>
+      <td>{"----"}</td>
+    </tr>
+  ))}
             </tbody>
           </table>
         </div>
