@@ -48,9 +48,40 @@ export default function Home({ resource, object, template }) {
     }
   }, [resourceId, template, templateId, object]);
 
+  const getUnixTimeForFirstDay = (interval) => {
+    let unixTimeForFirstDay = 0;
+    const currentDate = new Date();
+    if (interval === '2592000') {
+      currentDate.setDate(1);
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      currentDate.setDate(1);
+      currentDate.setHours(0, 0, 0, 0);
+      console.log('=====Date===', currentDate);
+      unixTimeForFirstDay = Math.floor(currentDate.getTime() / 1000);
+    } else {
+      const time = Math.floor(currentDate.getTime() / 1000);
+      unixTimeForFirstDay = time - parseInt(interval, 10);
+    }
+    return unixTimeForFirstDay;
+  };
+
+  const getUnixTimeForLastDayOfLastMonth = (interval) => {
+    let unixTimeForLastDay = 0;
+    const currentDate = new Date();
+    if (interval === '2592000') {
+      currentDate.setDate(1);
+      currentDate.setDate(0);
+      currentDate.setHours(23, 59, 59, 999);
+      console.log('=====Date===', currentDate);
+      unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
+    } else {
+      unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
+    }
+    return unixTimeForLastDay;
+  };
+
   const toggleShowTable = async () => {
     setLoading(true);
-    const dateObject = new Date();
 
     // const convertToUnixTimestamp = (milliseconds) => {
     //   // Specify the date and time
@@ -63,8 +94,6 @@ export default function Home({ resource, object, template }) {
     //   return unixTimestamp;
     // };
 
-    const to = Math.floor(dateObject.getTime() / 1000);
-
     const params = {
       reportResourceId: parseInt(resourceId),
       reportTemplateId: parseInt(templateId),
@@ -72,8 +101,8 @@ export default function Home({ resource, object, template }) {
       reportObjectId: parseInt(resourceId),
       reportObjectSecId: groupId,
       interval: {
-        from: to - parseInt(interval, 10),
-        to: to,
+        from: getUnixTimeForFirstDay(interval),
+        to: getUnixTimeForLastDayOfLastMonth(interval),
         flags: 16777216,
       },
     };
