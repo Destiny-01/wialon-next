@@ -136,6 +136,7 @@ export default function Home({ resource, object, template }) {
     console.log(event.target.value);
     setInterval(event.target.value);
   };
+  console.log("table data", tableData);
 
   return (
     <>
