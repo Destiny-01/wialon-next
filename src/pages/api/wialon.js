@@ -1,29 +1,29 @@
-const wialon = require("wialon");
+const wialon = require('wialon');
 
 export default async function handler(req, res) {
   try {
     const opts = {
       authz: {
         token:
-          "cff41ecd2f9615c24a95c8e9d906cde9DFC283DDD9407133F3B10D5E589A8419681732CF",
+          'cff41ecd2f9615c24a95c8e9d906cde9DFC283DDD9407133F3B10D5E589A8419681732CF',
       },
     };
 
     const session = await wialon(opts).session;
 
-    if (req.method === "POST" && req.body.first === "wialon_first") {
+    if (req.method === 'POST' && req.body.first === 'wialon_first') {
       let response;
 
       const params = {
         params: [
           {
-            svc: "core/search_items",
+            svc: 'core/search_items',
             params: {
               spec: {
-                itemsType: "avl_resource",
-                propName: "*",
-                propValueMask: "*",
-                sortType: "",
+                itemsType: 'avl_resource',
+                propName: '*',
+                propValueMask: '*',
+                sortType: '',
               },
               force: 1,
               flags: 1,
@@ -32,18 +32,18 @@ export default async function handler(req, res) {
             },
           },
           {
-            svc: "core/update_data_flags",
+            svc: 'core/update_data_flags',
             params: {
               spec: [
-                { type: "type", data: "avl_resource", flags: 33281, mode: 1 },
+                { type: 'type', data: 'avl_resource', flags: 33281, mode: 1 },
               ],
             },
           },
           {
-            svc: "core/update_data_flags",
+            svc: 'core/update_data_flags',
             params: {
               spec: [
-                { type: "type", data: "avl_resource", flags: 8197, mode: 1 },
+                { type: 'type', data: 'avl_resource', flags: 8197, mode: 1 },
               ],
             },
           },
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
       };
 
       await session
-        .request("core/batch", params)
+        .request('core/batch', params)
         .then(async function (data) {
           response = data;
           ///console.log(data);
@@ -65,14 +65,14 @@ export default async function handler(req, res) {
       return res.status(200).json({
         response,
       });
-    } else if (req.method === "POST" && req.body.first === "wialon_second") {
+    } else if (req.method === 'POST' && req.body.first === 'wialon_second') {
       let response;
-      console.log("starting the request", req.body.params);
+      //console.log('starting the request', req.body.params);
 
       await session
-        .request("report/exec_report", req.body.params)
+        .request('report/exec_report', req.body.params)
         .then(function (data) {
-          console.log(data);
+          //console.log(data);
         })
         .catch(function (err) {
           console.log(err);
@@ -81,10 +81,10 @@ export default async function handler(req, res) {
         });
 
       await session
-        .request("report/get_report_status", {})
+        .request('report/get_report_status', {})
 
         .then(async function (data) {
-          console.log(data);
+          //console.log(data);
         })
         .catch(function (err) {
           console.log(err);
@@ -92,9 +92,9 @@ export default async function handler(req, res) {
         });
 
       await session
-        .request("events/check_updates", { detalization: 3 })
+        .request('events/check_updates', { detalization: 3 })
         .then(async function (data) {
-          console.log(data);
+          //console.log(data);
         })
         .catch(function (err) {
           console.log(err);
@@ -102,9 +102,9 @@ export default async function handler(req, res) {
         });
 
       await session
-        .request("report/get_report_status", {})
+        .request('report/get_report_status', {})
         .then(async function (data) {
-          console.log(data);
+          //console.log(data);
         })
         .catch(function (err) {
           console.log(err);
@@ -112,9 +112,9 @@ export default async function handler(req, res) {
         });
 
       await session
-        .request("report/apply_report_result", {})
+        .request('report/apply_report_result', {})
         .then(async function (data) {
-          console.log(data);
+          //console.log(data);
         })
         .catch(function (err) {
           console.log(err);
@@ -124,7 +124,7 @@ export default async function handler(req, res) {
       const table = (id) => ({
         tableIndex: id,
         config: {
-          type: "range",
+          type: 'range',
           data: { from: 0, to: 30, level: 0, unitInfo: 1 },
         },
       });
@@ -144,85 +144,87 @@ export default async function handler(req, res) {
         return new Promise(async (resolve) => {
           try {
             const result = await session.request(
-              "report/select_result_rows",
+              'report/select_result_rows',
               table
             );
-            resolve({ status: "fulfilled", value: result });
+            resolve({ status: 'fulfilled', value: result });
           } catch (error) {
-            resolve({ status: "rejected", reason: error.message });
+            resolve({ status: 'rejected', reason: error.message });
           }
         });
       }
 
       const output = tables.map(
-        (table) => table.status === "fulfilled" && table.value.value
+        (table) => table.status === 'fulfilled' && table.value.value
       );
 
-      console.log(output);
+      //console.log('output', output[5]);
       // let output1 = {};
 
       async function processTable(table, i) {
-        if (table.c[6] < 10) {
+        if (table.c[5] >= 1) {
           const requestTable = {
-            tableIndex: 5,
+            tableIndex: 4,
             config: {
-              type: "row",
+              type: 'row',
               data: { rows: [i], level: 0, unitInfo: 1 },
             },
           };
 
           const result = await session.request(
-            "report/select_result_rows",
+            'report/select_result_rows',
             requestTable
           );
 
-          result.forEach((r) => {
-            output[1] = output[1].map((o) => {
-              o.c.push({ b: [] });
-              console.log(o.c[5] < 10, o.c[0], r.c[3]);
-              parseFloat(o.c[5]) < 10 &&
-                o.c[0].trim() === r.c[3].trim() &&
-                o.c[o.c.length - 1].b.push(r.c);
-              return o;
-            });
-          });
+          try {
+            await Promise.all(
+              result.map(async (res) => {
+                if (res.c[5] >= 1) {
+                  const requestTable2 = {
+                    tableIndex: 4,
+                    config: {
+                      type: 'row',
+                      data: { rows: [i, res.n], level: 0, unitInfo: 1 },
+                    },
+                  };
+
+                  const data = await session.request(
+                    'report/select_result_rows',
+                    requestTable2
+                  );
+
+                  data.forEach((r) => {
+                    output[1] = output[1].map((o) => {
+                      if (o.c[7] === undefined && parseInt(o.c[4]) >= 1) {
+                        o.c.push({ b: [] });
+                      }
+
+                      parseFloat(o.c[5]) < 10 &&
+                        o.c[0].trim() === r.c[1].trim() &&
+                        o.c[o.c.length - 1].b.push(r.c);
+                      return o;
+                    });
+                  });
+                }
+              })
+            );
+          } catch (error) {
+            console.error('Error processing tables:', error);
+          }
         }
       }
 
       // Use Promise.all to await all asynchronous operations
-      await Promise.all(output[6]?.map(processTable));
-
-      console.log(output[1][8]?.c, "nnn");
-
-      // await session
-      //   .request('report/select_result_rows', req.body.table)
-      //   .then(async function (data) {
-      //     console.log(data);
-      //     response = data;
-      //   })
-      //   .catch(function (err) {
-      //     console.log(err);
-      //     return;
-      //   });
+      await Promise.all(output[5]?.map(processTable));
 
       return res.status(200).json({
         // response,
         response: output,
       });
-      // } else if (req.method === "PUT") {
-      //   const { tableIndex, row } = req.body;
-      //   const table = {
-      //     tableIndex,
-      //     config: { type: "row", data: { rows: [row], level: 0, unitInfo: 1 } },
-      //   };
-
-      //   const result = await session.request("report/select_result_rows", table);
-
-      //   return res.status(200).json({ result });
     } else {
-      return res.status(400).json({ error: "Invalid route" });
+      return res.status(400).json({ error: 'Invalid route' });
     }
   } catch (err) {
-    console.log("Error", err);
+    console.log('Error', err);
   }
 }
