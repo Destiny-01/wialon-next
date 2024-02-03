@@ -4,7 +4,7 @@ html {
 }
 
 table {
-  background-color: transparent;
+  background-color: #0000FF;
   border: none;
 }
 
@@ -36,4 +36,16 @@ p {
   overflow-y: auto;
   overflow-x: auto;
   max-width: 100%;
+}
+
+.low-score {
+  background-color: #ff9999; /* Light red for low scores */
+}
+
+.medium-score {
+  background-color: #ffff99; /* Light yellow for medium scores */
+}
+
+.high-score {
+  background-color: #99ff99; /* Light green for high scores */
 }
