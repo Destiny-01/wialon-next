@@ -147,6 +147,9 @@ export default function Home({ resource, object, template }) {
       </Head>
       <main>
         <div className='my-5'>
+          <div className='logo'>
+            <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fampenet.com%2Fteams%2Fwialon%2F&psig=AOvVaw3-fMcLKvIO-PSQFjHs04Zx&ust=1707078532057000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCMiB66GBkIQDFQAAAAAdAAAAABAI" alt="#"/>
+          </div>
           <h1 className='text-center p-2'>
             Wialon Playground - Execute custom report
           </h1>
@@ -267,6 +270,9 @@ export default function Home({ resource, object, template }) {
           </div>
         </div>
       </main>
+      <div className='footer'>
+        <p>copyright &#169; <span>Gigasec.</span> Designed with by ❤️ <span>Gigasec Dev Team</span> Gigasec Dev Team All rights reserved </p>
+      </div>
     </>
   );
 }

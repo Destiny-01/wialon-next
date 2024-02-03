@@ -4,7 +4,7 @@ html {
 }
 
 table {
-  background-color: #0000FF;
+  background-color: #B0E0E6;
   border: none;
 }
 
@@ -48,4 +48,11 @@ p {
 
 .high-score {
   background-color: #99ff99; /* Light green for high scores */
+}
+.footer p {
+  text-align: center;
+}
+.footer p span {
+  text-decoration: underline;
+  color: #0000FF;
 }
