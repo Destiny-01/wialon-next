@@ -52,7 +52,7 @@ p {
 .footer p {
   text-align: center;
 }
-.footer p span {
+.footerDev {
   text-decoration: underline;
   color: #0000ff;
 }

@@ -273,11 +273,13 @@ export default function Home({ resource, object, template }) {
       </main>
       <div className='footer fs-6'>
         <p>
-          Copyright&#169; <span>Gigasec</span>
-          <div>
-            Designed with by ❤️ <span>Gigasec Dev Team</span> Gigasec Dev Team
+          Copyright&#169; <span>Gigasec.</span>
+          <br />
+          <span>
+            Designed with by ❤️{' '}
+            <span className='footerDev'>Gigasec Dev Team</span> Gigasec Dev Team
             All rights reserved{' '}
-          </div>
+          </span>
         </p>
       </div>
     </>
