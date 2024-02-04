@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
+import Wialon from '@/image/wialon.png';
 import { useEffect, useRef, useState } from 'react';
 import DriverTable from '../components/table';
 import axios from 'axios';
@@ -147,6 +148,9 @@ export default function Home({ resource, object, template }) {
       </Head>
       <main>
         <div className='my-5'>
+          <div className='logo'>
+            <Wialon />
+          </div>
           <h1 className='text-center p-2'>
             Wialon Playground - Execute custom report
           </h1>
@@ -267,6 +271,12 @@ export default function Home({ resource, object, template }) {
           </div>
         </div>
       </main>
+      <div className='footer'>
+        <p>
+          copyright &#169; <span>Gigasec.</span> Designed with by ❤️{' '}
+          <span>Gigasec Dev Team</span> Gigasec Dev Team All rights reserved{' '}
+        </p>
+      </div>
     </>
   );
 }

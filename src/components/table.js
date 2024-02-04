@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function timeToSeconds(time) {
   if (!time) {
@@ -98,13 +98,61 @@ const computeViolations = (violations) => {
   );
 };
 
+const getBackgroundColorClass = (driverScore) => {
+  const score = parseInt(driverScore, 10); // Convert driverScore to an integer if needed
+
+  if (score < 5) {
+    return 'low-score';
+  } else if (score < 7.5) {
+    return 'medium-score';
+  } else {
+    return 'high-score';
+  }
+};
+
 const DriverTable = ({ tableData }) => {
   console.log(tableData);
+
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+
+  useEffect(() => {
+    // Set the startDate based on the data from tableData when the component mounts
+    if (tableData && tableData[5] && tableData[5][0] && tableData[5][0].c[9]) {
+      const startDateFromTable = tableData[5][0].c[9].t;
+      setStartDate(startDateFromTable);
+    }
+
+    if (tableData && tableData[5] && tableData[5][0] && tableData[5][0].c[11]) {
+      const endDateFromTable = tableData[5][0].c[11].t;
+      setEndDate(endDateFromTable);
+    }
+  }, [tableData]);
+  const getCurrentTimeGMT = () => {
+    const options = {
+      timeZone: 'Africa/Lagos',
+      hour12: false,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+    };
+
+    const gmtTimeString = new Date().toLocaleString('en-US', options);
+    return gmtTimeString;
+  };
+
+  const currentTime = getCurrentTimeGMT();
 
   return (
     <div>
       <div>
         <h1>Driver Performance Table</h1>
+
+        <div className='fromDate'>
+          <h4>From : {startDate}</h4>
+          <h5>To : {endDate}</h5>
+          <h6>Time : {currentTime}</h6>
+        </div>
 
         <div className='table-responsive scrollable-table'>
           <table className='table table-bordered table-dark'>
@@ -140,9 +188,10 @@ const DriverTable = ({ tableData }) => {
                 <th scope='col'>Speed</th>
               </tr>
             </thead>
+            <br></br>
             <tbody>
               {tableData[1]?.map((table, i) => (
-                <tr key={i}>
+                <tr key={i} className={getBackgroundColorClass(table.c[5])}>
                   <th scope='row'>{table.c[0] || '---'}</th>
                   <td>{table.c[5] || '0'}</td>
                   <td>{table.c[2] || '0'}</td>
