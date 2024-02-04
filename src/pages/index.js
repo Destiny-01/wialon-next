@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
-import Wialon from '@/image/wialon.png';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import DriverTable from '../components/table';
 import axios from 'axios';
@@ -149,7 +149,7 @@ export default function Home({ resource, object, template }) {
       <main>
         <div className='my-5'>
           <div className='logo'>
-            <Wialon />
+            <Image src='/wialon.jpeg' width={64} height={64} alt='#' />
           </div>
           <h1 className='text-center p-2'>
             Wialon Playground - Execute custom report
@@ -271,10 +271,13 @@ export default function Home({ resource, object, template }) {
           </div>
         </div>
       </main>
-      <div className='footer'>
+      <div className='footer fs-6'>
         <p>
-          copyright &#169; <span>Gigasec.</span> Designed with by ❤️{' '}
-          <span>Gigasec Dev Team</span> Gigasec Dev Team All rights reserved{' '}
+          Copyright&#169; <span>Gigasec</span>
+          <div>
+            Designed with by ❤️ <span>Gigasec Dev Team</span> Gigasec Dev Team
+            All rights reserved{' '}
+          </div>
         </p>
       </div>
     </>

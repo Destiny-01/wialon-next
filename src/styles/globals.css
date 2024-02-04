@@ -4,7 +4,7 @@ html {
 }
 
 table {
-  background-color: #B0E0E6;
+  background-color: #b0e0e6;
   border: none;
 }
 
@@ -54,5 +54,5 @@ p {
 }
 .footer p span {
   text-decoration: underline;
-  color: #0000FF;
+  color: #0000ff;
 }
