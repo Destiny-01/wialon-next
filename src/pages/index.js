@@ -307,7 +307,7 @@ export default function Home({ resource, object, template }) {
           Copyright&#169; <span>Gigasec</span>
           <br />
           <span>
-            Designed with ❤️ <span className='footerDev'><a href="https://gigasecintl.com/"Gigasec Dev Team</a></span>
+            Designed with ❤️ <span className='footerDev'><a href="https://gigasecintl.com/">Gigasec Dev Team</a></span>
           </span>
         </p>
       </div>
