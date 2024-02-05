@@ -1,8 +1,10 @@
 import Head from 'next/head';
-import styles from '@/styles/Home.module.css';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import DriverTable from '../components/table';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import styles from '@/styles/DatePicker.module.css';
 import axios from 'axios';
 
 export default function Home({ resource, object, template }) {
@@ -18,6 +20,8 @@ export default function Home({ resource, object, template }) {
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [interval, setInterval] = useState(86400);
+  const [selectedFromDate, setSelectedFromDate] = useState(null);
+  const [selectedToDate, setSelectedToDate] = useState(null);
 
   const onOptionChangeHandler = (event) => {
     setResourceId(event.target.value);
@@ -49,51 +53,60 @@ export default function Home({ resource, object, template }) {
     }
   }, [resourceId, template, templateId, object]);
 
-  const getUnixTimeForFirstDay = (interval) => {
-    let unixTimeForFirstDay = 0;
-    const currentDate = new Date();
-    if (interval === '2592000') {
-      currentDate.setDate(1);
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      currentDate.setDate(1);
-      currentDate.setHours(0, 0, 0, 0);
-      console.log('=====Date===', currentDate);
-      unixTimeForFirstDay = Math.floor(currentDate.getTime() / 1000);
-    } else {
-      const time = Math.floor(currentDate.getTime() / 1000);
-      unixTimeForFirstDay = time - parseInt(interval, 10);
-    }
-    return unixTimeForFirstDay;
+  console.log('====selectedFromDate====', selectedFromDate);
+  console.log('====selectedToDate====', selectedToDate);
+
+  const getUnitTimeFrom = (date) => {
+    const dateString = new Date(date);
+    dateString.setHours(0, 0, 0, 0);
+    console.log('====dateFrom====', date);
+    return Math.floor(dateString.getTime() / 1000);
   };
 
-  const getUnixTimeForLastDayOfLastMonth = (interval) => {
-    let unixTimeForLastDay = 0;
-    const currentDate = new Date();
-    if (interval === '2592000') {
-      currentDate.setDate(1);
-      currentDate.setDate(0);
-      currentDate.setHours(23, 59, 59, 999);
-      console.log('=====Date===', currentDate);
-      unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
-    } else {
-      unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
-    }
-    return unixTimeForLastDay;
+  const getUnitTimeTo = (date) => {
+    const dateString = new Date(date);
+    dateString.setHours(23, 59, 59, 999);
+    console.log('====dateTo====', dateString);
+    return Math.floor(dateString.getTime() / 1000);
   };
+
+  // console.log('====FromDate====', getUnitTimeFrom(selectedFromDate));
+  // console.log('====ToDate====', getUnitTimeTo(selectedToDate));
+
+  // const getUnixTimeForFirstDay = (interval) => {
+  //   let unixTimeForFirstDay = 0;
+  //   const currentDate = new Date();
+  //   if (interval === '2592000') {
+  //     currentDate.setDate(1);
+  //     currentDate.setMonth(currentDate.getMonth() - 1);
+  //     currentDate.setDate(1);
+  //     currentDate.setHours(0, 0, 0, 0);
+  //     console.log('=====Date===', currentDate);
+  //     unixTimeForFirstDay = Math.floor(currentDate.getTime() / 1000);
+  //   } else {
+  //     const time = Math.floor(currentDate.getTime() / 1000);
+  //     unixTimeForFirstDay = time - parseInt(interval, 10);
+  //   }
+  //   return unixTimeForFirstDay;
+  // };
+
+  // const getUnixTimeForLastDayOfLastMonth = (interval) => {
+  //   let unixTimeForLastDay = 0;
+  //   const currentDate = new Date();
+  //   if (interval === '2592000') {
+  //     currentDate.setDate(1);
+  //     currentDate.setDate(0);
+  //     currentDate.setHours(23, 59, 59, 999);
+  //     console.log('=====Date===', currentDate);
+  //     unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
+  //   } else {
+  //     unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
+  //   }
+  //   return unixTimeForLastDay;
+  // };
 
   const toggleShowTable = async () => {
     setLoading(true);
-
-    // const convertToUnixTimestamp = (milliseconds) => {
-    //   // Specify the date and time
-    //   // const dateString = '2023-12-22 00:00:00';
-    //   const dateObject = new Date();
-
-    //   const unixTimestamp = Math.floor(
-    //     (dateObject.getTime() - milliseconds) / 1000
-    //   );
-    //   return unixTimestamp;
-    // };
 
     const params = {
       reportResourceId: parseInt(resourceId),
@@ -102,8 +115,8 @@ export default function Home({ resource, object, template }) {
       reportObjectId: parseInt(resourceId),
       reportObjectSecId: groupId,
       interval: {
-        from: getUnixTimeForFirstDay(interval),
-        to: getUnixTimeForLastDayOfLastMonth(interval),
+        from: getUnitTimeFrom(selectedFromDate),
+        to: getUnitTimeTo(selectedToDate),
         flags: 16777216,
       },
     };
@@ -224,8 +237,8 @@ export default function Home({ resource, object, template }) {
                   <div className='card-header'>
                     <div className='card-title'>Select time interval</div>
                   </div>
-                  <div className='card-body'>
-                    <select
+                  <div className='card-body d-flex justify-content-between'>
+                    {/* <select
                       id='interval'
                       className='js-example-templating js-persons form-control'
                       onChange={onOptionChangeHandlerInterval}>
@@ -244,7 +257,25 @@ export default function Home({ resource, object, template }) {
                         title='86400 sec * 30 days = 2592000 sec = 1 month'>
                         Last month
                       </option>
-                    </select>
+                    </select> */}
+                    <div className=' me-4'>
+                      <span className='card-title'>From:</span>
+                      <DatePicker
+                        className='js-example-templating js-persons form-control'
+                        selected={selectedFromDate}
+                        onChange={(date) => setSelectedFromDate(date)}
+                        dateFormat='dd/MM/yyyy'
+                      />
+                    </div>
+                    <div>
+                      <span className='card-title'>To:</span>
+                      <DatePicker
+                        className='js-example-templating js-persons form-control'
+                        selected={selectedToDate}
+                        onChange={(date) => setSelectedToDate(date)}
+                        dateFormat='dd/MM/yyyy'
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
