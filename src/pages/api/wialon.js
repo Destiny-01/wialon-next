@@ -179,6 +179,8 @@ export default async function handler(req, res) {
           try {
             await Promise.all(
               result.map(async (res) => {
+                //console.log('res2', res);
+                console.log('res', res);
                 if (res.c[5] >= 1) {
                   const requestTable2 = {
                     tableIndex: 4,
@@ -192,6 +194,8 @@ export default async function handler(req, res) {
                     'report/select_result_rows',
                     requestTable2
                   );
+
+                  console.log('data', data);
 
                   data.forEach((r) => {
                     output[1] = output[1].map((o) => {

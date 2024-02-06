@@ -19,7 +19,6 @@ export default function Home({ resource, object, template }) {
   const [groupId, setGroupId] = useState('');
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const [interval, setInterval] = useState(86400);
   const [selectedFromDate, setSelectedFromDate] = useState(null);
   const [selectedToDate, setSelectedToDate] = useState(null);
 
@@ -53,20 +52,15 @@ export default function Home({ resource, object, template }) {
     }
   }, [resourceId, template, templateId, object]);
 
-  console.log('====selectedFromDate====', selectedFromDate);
-  console.log('====selectedToDate====', selectedToDate);
-
   const getUnitTimeFrom = (date) => {
     const dateString = new Date(date);
     dateString.setHours(0, 0, 0, 0);
-    console.log('====dateFrom====', date);
     return Math.floor(dateString.getTime() / 1000);
   };
 
   const getUnitTimeTo = (date) => {
     const dateString = new Date(date);
     dateString.setHours(23, 59, 59, 999);
-    console.log('====dateTo====', dateString);
     return Math.floor(dateString.getTime() / 1000);
   };
 
@@ -142,7 +136,6 @@ export default function Home({ resource, object, template }) {
         setLoading(false);
       });
     setTableData(res.data.response);
-    console.log('======res======', res);
     setLoading(false);
   };
 
@@ -294,7 +287,11 @@ export default function Home({ resource, object, template }) {
             <div id='log'></div>
             <div>
               {tableData?.length > 0 ? (
-                <DriverTable tableData={tableData} />
+                <DriverTable
+                  tableData={tableData}
+                  selectedFromDate={selectedFromDate}
+                  selectedToDate={selectedToDate}
+                />
               ) : (
                 <p>No data generated</p>
               )}
