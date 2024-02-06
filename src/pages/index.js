@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DriverTable from '../components/table';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -304,7 +304,10 @@ export default function Home({ resource, object, template }) {
           Copyright&#169; <span>Gigasec</span>
           <br />
           <span>
-            Designed with ❤️ <span className='footerDev'><a href="https://gigasecintl.com/">Gigasec Dev Team</a></span>
+            Designed with ❤️{' '}
+            <span className='footerDev'>
+              <a href='https://gigasecintl.com/'>Gigasec Dev Team</a>
+            </span>
           </span>
         </p>
       </div>
