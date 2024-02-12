@@ -1,69 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-
-// function timeToSeconds(time) {
-//   if (!time) {
-//     return 0;
-//   }
-//   const [hours, minutes, seconds] = time.split(':').map(Number);
-
-//   const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-
-//   return totalSeconds;
-// }
-
-// function calculateSpeed(distance, timeInSeconds) {
-//   if (timeInSeconds === 0) {
-//     return 0;
-//   }
-//   const timeInHours = timeInSeconds / 3600;
-
-//   const speed = distance / timeInHours;
-
-//   return speed.toFixed(2);
-// }
-
-// function timeStringToSeconds(timeString) {
-//   const [hours, minutes, seconds] = timeString.split(':').map(Number);
-//   return hours * 3600 + minutes * 60 + seconds;
-// }
-
-// // Function to convert seconds to time string
-// function secondsToTimeString(seconds) {
-//   if (!seconds) {
-//     return null;
-//   }
-//   const hours = Math.floor(seconds / 3600);
-//   const minutes = Math.floor((seconds % 3600) / 60);
-//   const remainingSeconds = seconds % 60;
-
-//   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(
-//     2,
-//     '0'
-//   )}:${String(remainingSeconds).padStart(2, '0')}`;
-// }
-
-// // Calculate average time
-// function calculateAverageTime(timeArray) {
-//   const totalSeconds = timeArray.reduce(
-//     (acc, timeString) => acc + timeStringToSeconds(timeString[4]),
-//     0
-//   );
-//   const averageSeconds = totalSeconds / timeArray.length;
-
-//   return secondsToTimeString(averageSeconds);
-// }
-
-// function calculateAverageSpeed(speedArray) {
-//   console.log('speedArray', speedArray);
-//   const totalSeconds = speedArray.reduce(
-//     (acc, speedString) => acc + parseFloat(speedString[4]),
-//     0
-//   );
-//   const averageSeconds = totalSeconds / speedArray.length;
-
-//   return averageSeconds ? averageSeconds.toFixed(2) + ' km' : null;
-// }
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
+import ReactPDF, {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  PDFViewer,
+  PDFDownloadLink,
+} from '@react-pdf/renderer';
+import { MyDocument } from './myPdf';
 
 const getBackgroundColorClass = (driverScore) => {
   const score = parseInt(driverScore, 10);
@@ -143,21 +92,6 @@ const DriverTable = ({ tableData, selectedFromDate, selectedToDate }) => {
     });
   }, [tableData]);
 
-  const getCurrentTimeGMT = () => {
-    const options = {
-      timeZone: 'Africa/Lagos',
-      hour12: false,
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-    };
-
-    const gmtTimeString = new Date().toLocaleString('en-US', options);
-    return gmtTimeString;
-  };
-
-  const currentTime = getCurrentTimeGMT();
-
   const uniqueArray = tableContains.filter(
     (obj, index, self) =>
       index === self.findIndex((o) => o.driverName === obj.driverName)
@@ -191,6 +125,22 @@ const DriverTable = ({ tableData, selectedFromDate, selectedToDate }) => {
             onClick={() => exportToExcel(uniqueArray, 'wialonData')}>
             Export to Excel
           </button>
+        </div>
+
+        <div id='capture' className=' d-flex justify-content-end mb-2'>
+          <PDFDownloadLink
+            document={<MyDocument data={uniqueArray} fileName={'wialonData'} />}
+            fileName='somename.pdf'>
+            {({ blob, url, loading, error }) =>
+              loading ? (
+                'Loading document...'
+              ) : (
+                <button className='btn btn-info' id='exec_btn' type='button'>
+                  Export to PDF
+                </button>
+              )
+            }
+          </PDFDownloadLink>
         </div>
 
         <div className=' border border-secondary'>

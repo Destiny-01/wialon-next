@@ -64,41 +64,6 @@ export default function Home({ resource, object, template }) {
     return Math.floor(dateString.getTime() / 1000);
   };
 
-  // console.log('====FromDate====', getUnitTimeFrom(selectedFromDate));
-  // console.log('====ToDate====', getUnitTimeTo(selectedToDate));
-
-  // const getUnixTimeForFirstDay = (interval) => {
-  //   let unixTimeForFirstDay = 0;
-  //   const currentDate = new Date();
-  //   if (interval === '2592000') {
-  //     currentDate.setDate(1);
-  //     currentDate.setMonth(currentDate.getMonth() - 1);
-  //     currentDate.setDate(1);
-  //     currentDate.setHours(0, 0, 0, 0);
-  //     console.log('=====Date===', currentDate);
-  //     unixTimeForFirstDay = Math.floor(currentDate.getTime() / 1000);
-  //   } else {
-  //     const time = Math.floor(currentDate.getTime() / 1000);
-  //     unixTimeForFirstDay = time - parseInt(interval, 10);
-  //   }
-  //   return unixTimeForFirstDay;
-  // };
-
-  // const getUnixTimeForLastDayOfLastMonth = (interval) => {
-  //   let unixTimeForLastDay = 0;
-  //   const currentDate = new Date();
-  //   if (interval === '2592000') {
-  //     currentDate.setDate(1);
-  //     currentDate.setDate(0);
-  //     currentDate.setHours(23, 59, 59, 999);
-  //     console.log('=====Date===', currentDate);
-  //     unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
-  //   } else {
-  //     unixTimeForLastDay = Math.floor(currentDate.getTime() / 1000);
-  //   }
-  //   return unixTimeForLastDay;
-  // };
-
   const toggleShowTable = async () => {
     setLoading(true);
 
