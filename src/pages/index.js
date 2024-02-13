@@ -1,202 +1,333 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import DriverTable from '../components/table';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import styles from '@/styles/DatePicker.module.css';
-import axios from 'axios';
+import Head from "next/head";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.css";
+
+import wialon2 from "../../public/wialon2.png";
+import DriverTable from "../components/table";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import styles from "@/styles/DatePicker.module.css";
+import axios from "axios";
 
 export default function Home({ resource, object, template }) {
-  const baseUrl =
-    process.env.NODE_ENV === 'production'
-      ? 'https://wialon-next.vercel.app'
-      : 'http://localhost:3000';
-  const [resourceId, setResourceId] = useState('');
-  const [report, setReport] = useState([]);
-  const [group, setGroup] = useState([]);
-  const [templateId, setTemplateId] = useState('');
-  const [groupId, setGroupId] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
-  const [selectedFromDate, setSelectedFromDate] = useState(null);
-  const [selectedToDate, setSelectedToDate] = useState(null);
+	const baseUrl =
+		process.env.NODE_ENV === "production"
+			? "https://wialon-next.vercel.app"
+			: "http://localhost:3000";
+	const [resourceId, setResourceId] = useState("");
+	const [report, setReport] = useState([]);
+	const [group, setGroup] = useState([]);
+	const [templateId, setTemplateId] = useState("");
+	const [groupId, setGroupId] = useState("");
+	const [loading, setLoading] = useState(false);
+	const [tableData, setTableData] = useState([]);
+	const [selectedFromDate, setSelectedFromDate] = useState(null);
+	const [selectedToDate, setSelectedToDate] = useState(null);
+	const [selectedDates, setSelectedDates] = useState([]);
 
-  const onOptionChangeHandler = (event) => {
-    setResourceId(event.target.value);
-  };
+	const onOptionChangeHandler = (event) => {
+		setResourceId(event.target.value);
+	};
 
-  const onOptionChangeHandlerTemplate = (event) => {
-    setTemplateId(event.target.value);
-  };
+	const onOptionChangeHandlerTemplate = (event) => {
+		setTemplateId(event.target.value);
+	};
 
-  const onOptionChangeHandlerGroup = (event) => {
-    setGroupId(event.target.value);
-  };
+	const onOptionChangeHandlerGroup = (event) => {
+		setGroupId(event.target.value);
+	};
 
-  useEffect(() => {
-    if (resourceId) {
-      template.filter((item) => {
-        if (item.i === parseInt(resourceId)) {
-          setReport(item.d.rep);
-        }
-      });
-    }
+	useEffect(() => {
+		if (resourceId) {
+			template.filter((item) => {
+				if (item.i === parseInt(resourceId)) {
+					setReport(item.d.rep);
+				}
+			});
+		}
 
-    if (templateId) {
-      object.filter((item) => {
-        if (item.i === parseInt(resourceId)) {
-          setGroup(item.d.drvrsgr);
-        }
-      });
-    }
-  }, [resourceId, template, templateId, object]);
+		if (templateId) {
+			object.filter((item) => {
+				if (item.i === parseInt(resourceId)) {
+					setGroup(item.d.drvrsgr);
+				}
+			});
+		}
+	}, [resourceId, template, templateId, object]);
 
-  const getUnitTimeFrom = (date) => {
-    const dateString = new Date(date);
-    dateString.setHours(0, 0, 0, 0);
-    return Math.floor(dateString.getTime() / 1000);
-  };
+	const getUnitTimeFrom = (date) => {
+		const dateString = new Date(date);
+		dateString.setHours(0, 0, 0, 0);
+		return Math.floor(dateString.getTime() / 1000);
+	};
 
-  const getUnitTimeTo = (date) => {
-    const dateString = new Date(date);
-    dateString.setHours(23, 59, 59, 999);
-    return Math.floor(dateString.getTime() / 1000);
-  };
+	const getUnitTimeTo = (date) => {
+		const dateString = new Date(date);
+		dateString.setHours(23, 59, 59, 999);
+		return Math.floor(dateString.getTime() / 1000);
+	};
 
-  const toggleShowTable = async () => {
-    setLoading(true);
+	const toggleShowTable = async () => {
+		setLoading(true);
 
-    const params = {
-      reportResourceId: parseInt(resourceId),
-      reportTemplateId: parseInt(templateId),
-      reportTemplate: null,
-      reportObjectId: parseInt(resourceId),
-      reportObjectSecId: groupId,
-      interval: {
-        from: getUnitTimeFrom(selectedFromDate),
-        to: getUnitTimeTo(selectedToDate),
-        flags: 16777216,
-      },
-    };
+		const params = {
+			reportResourceId: parseInt(resourceId),
+			reportTemplateId: parseInt(templateId),
+			reportTemplate: null,
+			reportObjectId: parseInt(resourceId),
+			reportObjectSecId: groupId,
+			interval: {
+				from: getUnitTimeFrom(selectedDates[0]),
+				to: getUnitTimeTo(selectedDates[1]),
+				flags: 16777216,
+			},
+		};
 
-    const table = {
-      tableIndex: -1,
-      config: {
-        type: 'range',
-        data: { from: 0, to: 30, level: 0, unitInfo: 1 },
-      },
-    };
+		const table = {
+			tableIndex: -1,
+			config: {
+				type: "range",
+				data: { from: 0, to: 30, level: 0, unitInfo: 1 },
+			},
+		};
 
-    const first = 'wialon_second';
+		const first = "wialon_second";
 
-    const res = await axios
-      .post(`${baseUrl}/api/wialon`, {
-        params,
-        table,
-        first,
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-    setTableData(res.data.response);
-    setLoading(false);
-  };
+		const res = await axios
+			.post(`${baseUrl}/api/wialon`, {
+				params,
+				table,
+				first,
+			})
+			.catch((err) => {
+				console.log(err);
+				setLoading(false);
+			});
+		setTableData(res.data.response);
+		setLoading(false);
+	};
 
-  const onOptionChangeHandlerInterval = (event) => {
-    console.log(event.target.value);
-    setInterval(event.target.value);
-  };
+	const onOptionChangeHandlerInterval = (event) => {
+		console.log(event.target.value);
+		setInterval(event.target.value);
+	};
 
-  return (
-    <>
-      <Head>
-        <title>IVMS Driving Report</title>
-        <meta name='description' content='Generated by create next app' />
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <main>
-        <div className='my-5'>
-          <div className='logo'>
-            <Image src='/wialon.jpeg' width={64} height={64} alt='#' />
-          </div>
-          <h1 className='text-center p-2'>
-            Wialon Playground - Execute custom report
-          </h1>
+	const options = {
+		mode: "range",
+		static: true,
+		monthSelectorType: "static",
+		dateFormat: "j M, Y",
+		defaultDate: [new Date().setDate(new Date().getDate() - 6), new Date()],
+		prevArrow:
+			'<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
+		nextArrow:
+			'<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
+		onReady: (selectedDates, dateStr, instance) => {
+			instance.element.value = dateStr.replace("to", "-");
+			const customClass = "right";
+			instance.calendarContainer.classList.add(`flatpickr-${customClass}`);
+		},
+		onChange: (selectedDates, dateStr, instance) => {
+			instance.element.value = dateStr.replace("to", "-");
+		},
+	};
+	console.log(selectedDates);
+	console.log(selectedFromDate);
+	console.log(selectedToDate);
 
-          <div className='container-sm align-items-center'>
-            <div className='row mb-4'>
-              <div className='col-lg-6 col-md-6 col-sm-12 col-xxl-3'>
-                <div className='card custom-card'>
-                  <div className='card-header'>
-                    <div className='card-title'>Select resource and table</div>
-                  </div>
-                  <div className='card-body'>
-                    <select
-                      id='res'
-                      className='js-example-templating js-persons form-control'
-                      onChange={onOptionChangeHandler}>
-                      <option>Please choose one option</option>
-                      {resource.map((item) => (
-                        <option value={item.id} key={item.id}>
-                          {item.nm}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-6 col-md-6 col-sm-12 col-xxl-3'>
-                <div className='card custom-card'>
-                  <div className='card-header'>
-                    <div className='card-title'>Templates</div>
-                  </div>
-                  <div className='card-body'>
-                    <select
-                      id='templ'
-                      className='js-example-templating js-persons form-control'
-                      onChange={onOptionChangeHandlerTemplate}>
-                      <option>Please choose one option</option>
-                      {report &&
-                        Object.keys(report).map((key) => (
-                          <option value={report[key].id} key={report[key].id}>
-                            {report[key].n}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-6 col-md-6 col-sm-12 col-xxl-3'>
-                <div className='card custom-card'>
-                  <div className='card-header'>
-                    <div className='card-title'>Select Group</div>
-                  </div>
-                  <div className='card-body'>
-                    <select
-                      id='units'
-                      className='js-example-templating js-persons form-control'
-                      onChange={onOptionChangeHandlerGroup}>
-                      <option>Please choose one option</option>
-                      {group &&
-                        Object.keys(group).map((key) => (
-                          <option value={group[key].id} key={group[key].id}>
-                            {group[key].n}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-6 col-md-6 col-sm-12 col-xxl-3'>
-                <div className='card custom-card'>
-                  <div className='card-header'>
-                    <div className='card-title'>Select time interval</div>
-                  </div>
-                  <div className='card-body d-flex justify-content-between'>
-                    {/* <select
+	return (
+		<>
+			<Head>
+				<title>IVMS Driving Report</title>
+				<meta name="description" content="Generated by create next app" />
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
+			<div className="flex h-screen overflow-y-hidden">
+				<div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+					<header className="sticky top-0 bg-white border-b border-slate-200 z-30">
+						<div className="px-4 sm:px-6 lg:px-8">
+							<div className="flex items-center justify-between h-16 -mb-px">
+								{/* Header: Left side */}
+								<Image src={wialon2} width={300} height={300} alt="wialon-logo" />
+							</div>
+						</div>
+					</header>
+
+					<main className="h-full font-inter antialiased bg-slate-100 text-slate-600">
+						<div className="px-4 sm:px-6 lg:px-8 w-full max-w-9xl mx-auto">
+							<h1 className="text-2xl md:text-3xl pb-6 text-slate-800 text-center font-bold mb-1">
+								Wialon Playground - Execute custom report
+							</h1>
+
+							<div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
+								<div className="flex flex-col col-span-full sm:col-span-6 bg-white shadow-md rounded-sm border border-slate-200">
+									<header className="px-5 py-4 border-b border-slate-100 flex items-center">
+										<h2 className="font-semibold text-slate-800">
+											Select resource and table
+										</h2>
+									</header>
+									<div className="w-full h-full py-2 px-1">
+										<select
+											id="res"
+											className="js-example-templating js-persons form-select"
+											onChange={onOptionChangeHandler}
+										>
+											<option>Please choose one option</option>
+											{resource.map((item) => (
+												<option value={item.id} key={item.id}>
+													{item.nm}
+												</option>
+											))}
+										</select>
+									</div>
+								</div>
+
+								{/* ============================= TEMPLATE ======================================== */}
+								<div className="flex flex-col col-span-full sm:col-span-6 bg-white shadow-md rounded-sm border border-slate-200">
+									<header className="px-5 py-4 border-b border-slate-100 flex items-center">
+										<h2 className="font-semibold text-slate-800">Templates</h2>
+									</header>
+									<div className="w-full h-full py-2 px-1">
+										<select
+											id="res"
+											className="js-example-templating js-persons form-select"
+											onChange={onOptionChangeHandlerTemplate}
+										>
+											<option>Please choose one option</option>
+											{report &&
+												Object.keys(report).map((key) => (
+													<option value={report[key].id} key={report[key].id}>
+														{report[key].n}
+													</option>
+												))}
+										</select>
+									</div>
+								</div>
+
+								{/* ============================= SELECT GROUP ======================================== */}
+								<div className="flex flex-col col-span-full sm:col-span-6 bg-white shadow-md rounded-sm border border-slate-200">
+									<header className="px-5 py-4 border-b border-slate-100 flex items-center">
+										<h2 className="font-semibold text-slate-800">Select Group</h2>
+									</header>
+									<div className="w-full h-full py-2 px-1">
+										<select
+											id="units"
+											className="js-example-templating js-persons form-select"
+											onChange={onOptionChangeHandlerGroup}
+										>
+											<option>Please choose one option</option>
+											{group &&
+												Object.keys(group).map((key) => (
+													<option value={group[key].id} key={group[key].id}>
+														{group[key].n}
+													</option>
+												))}
+										</select>
+									</div>
+								</div>
+								{/* ============================= TIME INTERVAL ======================================== */}
+								<div className="flex flex-col col-span-full sm:col-span-6 bg-white shadow-md rounded-sm border border-slate-200">
+									<header className="px-5 py-4 border-b border-slate-100 flex items-center">
+										<h2 className="font-semibold text-slate-800">Select Time Interval</h2>
+									</header>
+									<div className="w-full h-full py-2 px-1">
+										<div className="relative">
+											<Flatpickr
+												value={selectedDates}
+												onChange={(dates) => setSelectedDates(dates)}
+												className="form-input pl-9 text-slate-500 hover:text-slate-600 font-medium focus:border-slate-300 w-60"
+												options={options}
+											/>
+											<div className="absolute inset-0 right-auto flex items-center pointer-events-none">
+												<svg
+													className="w-4 h-4 fill-current text-slate-500 ml-3"
+													viewBox="0 0 16 16"
+												>
+													<path d="M15 2h-2V0h-2v2H9V0H7v2H5V0H3v2H1a1 1 0 00-1 1v12a1 1 0 001 1h14a1 1 0 001-1V3a1 1 0 00-1-1zm-1 12H2V6h12v8z" />
+												</svg>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div className="container-sm align-items-center">
+								<div className="row mb-4">
+									{/* <div className="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+										<div className="card custom-card">
+											<div className="card-header">
+												<div className="card-title">Select resource and table</div>
+											</div>
+											<div className="card-body">
+												<select
+													id="templ"
+													className="form-control"
+													onChange={onOptionChangeHandler}
+												>
+													<option>Please choose one option</option>
+													{resource.map((item) => (
+														<option value={item.id} key={item.id}>
+															{item.nm}
+														</option>
+													))}
+												</select>
+											</div>
+										</div>
+									</div> */}
+									{/* <div className="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+										<div className="card custom-card">
+											<div className="card-header">
+												<div className="card-title">Templates</div>
+											</div>
+											<div className="card-body">
+												<select
+													id="templ"
+													className="js-example-templating js-persons form-control"
+													onChange={onOptionChangeHandlerTemplate}
+												>
+													<option>Please choose one option</option>
+													{report &&
+														Object.keys(report).map((key) => (
+															<option value={report[key].id} key={report[key].id}>
+																{report[key].n}
+															</option>
+														))}
+												</select>
+											</div>
+										</div>
+									</div> */}
+									{/* <div className="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+										<div className="card custom-card">
+											<div className="card-header">
+												<div className="card-title">Select Group</div>
+											</div>
+											<div className="card-body">
+												<select
+													id="units"
+													className="js-example-templating js-persons form-control"
+													onChange={onOptionChangeHandlerGroup}
+												>
+													<option>Please choose one option</option>
+													{group &&
+														Object.keys(group).map((key) => (
+															<option value={group[key].id} key={group[key].id}>
+																{group[key].n}
+															</option>
+														))}
+												</select>
+											</div>
+										</div>
+									</div> */}
+									{/* <div className="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+										<div className="card custom-card">
+											<div className="card-header">
+												<div className="card-title">Select time interval</div>
+											</div>
+											<div className="card-body d-flex justify-content-between"> */}
+									{/* <select
                       id='interval'
                       className='js-example-templating js-persons form-control'
                       onChange={onOptionChangeHandlerInterval}>
@@ -216,94 +347,123 @@ export default function Home({ resource, object, template }) {
                         Last month
                       </option>
                     </select> */}
-                    <div className=' me-4'>
-                      <span className='card-title'>From:</span>
-                      <DatePicker
-                        className='js-example-templating js-persons form-control'
-                        selected={selectedFromDate}
-                        onChange={(date) => setSelectedFromDate(date)}
-                        dateFormat='dd/MM/yyyy'
-                      />
-                    </div>
-                    <div>
-                      <span className='card-title'>To:</span>
-                      <DatePicker
-                        className='js-example-templating js-persons form-control'
-                        selected={selectedToDate}
-                        onChange={(date) => setSelectedToDate(date)}
-                        dateFormat='dd/MM/yyyy'
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='row'>
-              <div className='btn-list'>
-                <button
-                  className='btn btn-info'
-                  id='exec_btn'
-                  type='button'
-                  onClick={toggleShowTable}>
-                  {loading ? 'Loading...' : 'Execute report'}
-                </button>
-              </div>
-            </div>
-            <div id='log'></div>
-            <div>
-              {tableData?.length > 0 ? (
-                <DriverTable
-                  tableData={tableData}
-                  selectedFromDate={selectedFromDate}
-                  selectedToDate={selectedToDate}
-                />
-              ) : (
-                <p>No data generated</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </main>
-      <div className='footer fs-6'>
-        <p>
-          Copyright&#169; <span>Gigasec</span>
-          <br />
-          <span>
-            Designed with ❤️{' '}
-            <span className='footerDev'>
-              <a href='https://gigasecintl.com/'>Gigasec Dev Team</a>
-            </span>
-          </span>
-        </p>
-      </div>
-    </>
-  );
+									{/* <div className=" me-4">
+													<span className="card-title">From:</span>
+													<DatePicker
+														className="js-example-templating js-persons form-control"
+														selected={selectedFromDate}
+														onChange={(date) => setSelectedFromDate(date)}
+														dateFormat="dd/MM/yyyy"
+													/>
+												</div>
+												<div>
+													<span className="card-title">To:</span>
+													<DatePicker
+														className="js-example-templating js-persons form-control"
+														selected={selectedToDate}
+														onChange={(date) => setSelectedToDate(date)}
+														dateFormat="dd/MM/yyyy"
+													/>
+												</div>
+											</div>
+										</div>
+									</div> */}
+								</div>
+								<div className="row">
+									<div className="btn-list text-center mx-auto min-w-[350px]">
+										{loading ? (
+											<button
+												className="btn flex justify-between items-center mx-auto bg-indigo-500 hover:bg-indigo-600 text-white disabled:border-slate-200 disabled:bg-indigo-500 disabled:text-white disabled:cursor-not-allowed shadow-none"
+												disabled
+											>
+												<svg
+													className="animate-spin w-4 h-4 fill-current shrink-0"
+													viewBox="0 0 16 16"
+												>
+													<path d="M8 16a7.928 7.928 0 01-3.428-.77l.857-1.807A6.006 6.006 0 0014 8c0-3.309-2.691-6-6-6a6.006 6.006 0 00-5.422 8.572l-1.806.859A7.929 7.929 0 010 8c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z" />
+												</svg>
+
+												<h4 className="ml-2">Loading</h4>
+											</button>
+										) : (
+											<button
+												className="btn bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-3"
+												id="exec_btn"
+												type="button"
+												onClick={toggleShowTable}
+											>
+												Execute report
+											</button>
+										)}
+										{/* <button
+											className="btn btn-info"
+											id="exec_btn"
+											type="button"
+											onClick={toggleShowTable}
+										>
+											{loading ? "Loading..." : "Execute report"}
+										</button> */}
+									</div>
+								</div>
+								<div id="log"></div>
+								<div>
+									{tableData?.length > 0 ? (
+										<DriverTable
+											tableData={tableData}
+											selectedDates={selectedDates}
+											selectedFromDate={selectedFromDate}
+											selectedToDate={selectedToDate}
+										/>
+									) : (
+										<p>No data generated</p>
+									)}
+								</div>
+							</div>
+						</div>
+					</main>
+				</div>
+			</div>
+
+			<div className="footer fs-6 font-inter antialiased bg-slate-100 text-slate-600">
+				<p>
+					Copyright&#169; <span>Gigasec</span>
+					<br />
+					<span>
+						Designed with ❤️{" "}
+						<span className="footerDev">
+							<a href="https://gigasecintl.com/">Gigasec Dev Team</a>
+						</span>
+					</span>
+				</p>
+			</div>
+		</>
+	);
 }
 
 export async function getServerSideProps() {
-  try {
-    const baseUrl =
-      process.env.NODE_ENV === 'production'
-        ? 'https://wialon-next.vercel.app'
-        : 'http://localhost:3000';
-    const first = 'wialon_first';
-    const res = await axios.post(`${baseUrl}/api/wialon`, { first });
-    //console.log(res);
-    return {
-      props: {
-        resource: res.data.response[0].items,
-        object: res.data.response[1],
-        template: res.data.response[2],
-      },
-    };
-  } catch (err) {
-    console.log(err.message);
-    return {
-      props: {
-        resource: [],
-        object: [],
-        template: [],
-      },
-    };
-  }
+	try {
+		const baseUrl =
+			process.env.NODE_ENV === "production"
+				? "https://wialon-next.vercel.app"
+				: "http://localhost:3000";
+		const first = "wialon_first";
+		const res = await axios.post(`${baseUrl}/api/wialon`, { first });
+		//console.log(res);
+		return {
+			props: {
+				resource: res.data.response[0].items,
+				object: res.data.response[1],
+				template: res.data.response[2],
+			},
+		};
+	} catch (err) {
+		console.log(err.message);
+		return {
+			props: {
+				resource: [],
+				object: [],
+				template: [],
+			},
+		};
+	}
 }
