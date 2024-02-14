@@ -27,6 +27,7 @@ export const MyDocument = ({ data, fileName }) => {
       margin: 10,
       padding: 10,
       flexGrow: 1,
+      textAlign: 'center',
     },
     tableHeader: {
       backgroundColor: '#e6e6e6',
@@ -98,6 +99,11 @@ export const MyDocument = ({ data, fileName }) => {
       flexDirection: 'row',
       fontSize: 8,
     },
+    header: {
+      fontSize: 24,
+      textAlign: 'center',
+      margin: 6,
+    },
   });
 
   const getBackGroundColor = (driverScore) => {
@@ -124,6 +130,7 @@ export const MyDocument = ({ data, fileName }) => {
         </View>
       </View> */}
         <View style={styles.section}>
+          <Text style={styles.header}>Drivers Performance Report</Text>
           <View style={styles.tableHeader}>
             <Text style={styles.tableDriverName}>Driver Name</Text>
             <Text style={styles.tableCell}>Driver Score</Text>
