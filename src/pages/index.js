@@ -152,12 +152,12 @@ export default function Home({ resource, object, template }) {
             <div className=' px-4 sm:px-6 lg:px-8'>
               <div className='flex items-center justify-self-center h-16 m-3'>
                 <Image
-                  className='mr-4'
+                  className=' mr-2 lg:mr-4'
                   src={gig}
                   width={110}
                   alt='wialon-logo'
                 />
-                <h1 className='text-xl mt-3'>
+                <h1 className=' text-sm lg:text-xl mt-3'>
                   In-Vehicle Monitoring System (IVMS)
                 </h1>
               </div>
