@@ -1,34 +1,35 @@
 {
-  "name": "next-wialon",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@react-pdf/renderer": "^3.3.7",
-    "axios": "^1.6.2",
-    "bootstrap": "^5.3.2",
-    "date-fns": "^3.3.1",
-    "file-saver": "^2.0.5",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.1",
-    "next": "14.0.4",
-    "react": "^18",
-    "react-datepicker": "^6.1.0",
-    "react-dom": "^18",
-    "react-flatpickr": "^3.10.13",
-    "wialon": "^2.0.2",
-    "xlsx": "^0.18.5"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.17",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.4",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1"
-  }
+	"name": "next-wialon",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@react-pdf/renderer": "^3.3.7",
+		"axios": "^1.6.2",
+		"bootstrap": "^5.3.2",
+		"date-fns": "^3.3.1",
+		"file-saver": "^2.0.5",
+		"html2canvas": "^1.4.1",
+		"jspdf": "^2.5.1",
+		"next": "14.0.4",
+		"react": "^18",
+		"react-datepicker": "^6.1.0",
+		"react-dom": "^18",
+		"react-flatpickr": "^3.10.13",
+		"wialon": "^2.0.2",
+		"xlsx": "^0.18.5"
+	},
+	"devDependencies": {
+		"autoprefixer": "^10.4.17",
+		"eslint": "^8",
+		"eslint-config-next": "14.0.4",
+		"postcss": "^8.4.35",
+		"@tailwindcss/forms": "^0.4.0",
+		"tailwindcss": "^3.4.1"
+	}
 }
