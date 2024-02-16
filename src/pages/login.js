@@ -18,43 +18,18 @@ const login = () => {
 							</div>
 						</div>
 
-						<div class="w-[320px] lg:w-[520px] mx-auto px-4 py-8">
+						<div class="w-[320px] lg:w-[520px] mx-auto px-4 py-2">
 							<h1 class="text-3xl text-slate-800 font-bold mb-6">Welcome back! ✨</h1>
 							<form>
-								<div class="space-y-4">
+								<div class="space-y-2">
 									<div>
-										<label class="block text-sm font-medium mb-1" for="email">
-											Username
-										</label>
-										<input id="email" class="form-input w-full" type="email" />
-									</div>
-									<div>
-										<label class="block text-sm font-medium mb-1" for="password">
-											Password
-										</label>
-										<input
-											id="password"
-											class="form-input w-full"
-											type="password"
-											autocomplete="on"
-										/>
-									</div>
-								</div>
-								<div class="flex items-center justify-between mt-6">
-									<div class="mr-1">
 										<a
-											class="text-sm underline hover:no-underline"
-											href="reset-password.html"
+											class="btn w-full bg-indigo-500 hover:bg-indigo-600 text-white ml-3"
+											href="index.html"
 										>
-											Forgot Password?
+											Sign In
 										</a>
 									</div>
-									<a
-										class="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3"
-										href="index.html"
-									>
-										Sign In
-									</a>
 								</div>
 							</form>
 						</div>
