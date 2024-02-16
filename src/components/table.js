@@ -122,7 +122,7 @@ const DriverTable = ({
 	};
 
 	return (
-		<div>
+		<div className="">
 			<div className=" mt-5">
 				<div className=" d-flex justify-content-end mb-2">
 					<button
