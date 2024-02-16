@@ -122,14 +122,14 @@ const DriverTable = ({
 	};
 
 	return (
-		<div className="">
+		<div>
 			<div className=" mt-5">
 				<div className=" d-flex justify-content-end mb-2">
 					<button
 						className="btn btn-info"
 						id="exec_btn"
 						type="button"
-						onClick={() => exportToExcel(uniqueArray, "wialonData")}
+						onClick={() => exportToExcel(uniqueArray, "report")}
 					>
 						Export to Excel
 					</button>
@@ -137,8 +137,8 @@ const DriverTable = ({
 
 				<div id="capture" className=" d-flex justify-content-end mb-2">
 					<PDFDownloadLink
-						document={<MyDocument data={uniqueArray} fileName={"wialonData"} />}
-						fileName="somename.pdf"
+						document={<MyDocument data={uniqueArray} />}
+						fileName="report.pdf"
 					>
 						{({ blob, url, loading, error }) =>
 							loading ? (

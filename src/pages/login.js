@@ -24,7 +24,7 @@ const login = () => {
 								<div class="space-y-4">
 									<div>
 										<label class="block text-sm font-medium mb-1" for="email">
-											Email Address
+											Username
 										</label>
 										<input id="email" class="form-input w-full" type="email" />
 									</div>
