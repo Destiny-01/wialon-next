@@ -5,7 +5,8 @@ export default async function handler(req, res) {
     const opts = {
       authz: {
         token:
-          'cff41ecd2f9615c24a95c8e9d906cde9DFC283DDD9407133F3B10D5E589A8419681732CF',
+          // 'cff41ecd2f9615c24a95c8e9d906cde9DFC283DDD9407133F3B10D5E589A8419681732CF',
+          req.body.accessToken,
       },
     };
 

@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 
@@ -11,8 +12,14 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from '@/styles/DatePicker.module.css';
 import axios from 'axios';
+import { useAuth } from '@/utils/useAuth';
+import { parseCookies, destroyCookie } from 'nookies';
 
 export default function Home({ resource, object, template }) {
+  useAuth();
+
+  const router = useRouter();
+
   const baseUrl =
     process.env.NODE_ENV === 'production'
       ? 'https://wialon-next.vercel.app'
@@ -96,11 +103,15 @@ export default function Home({ resource, object, template }) {
 
     const first = 'wialon_second';
 
+    const cookies = parseCookies();
+    const accessToken = cookies.accessToken;
+
     const res = await axios
       .post(`${baseUrl}/api/wialon`, {
         params,
         table,
         first,
+        accessToken,
       })
       .catch((err) => {
         console.log(err);
@@ -113,6 +124,11 @@ export default function Home({ resource, object, template }) {
   const onOptionChangeHandlerInterval = (event) => {
     console.log(event.target.value);
     setInterval(event.target.value);
+  };
+
+  const signOut = () => {
+    destroyCookie(null, 'accessToken');
+    router.push('/login');
   };
 
   const options = {
@@ -163,6 +179,15 @@ export default function Home({ resource, object, template }) {
               </div>
             </div>
           </header>
+          <div className=' flex justify-end mr-4 mt-2'>
+            <button
+              className='btn bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-3'
+              id='exec_btn'
+              type='button'
+              onClick={signOut}>
+              Sign out
+            </button>
+          </div>
 
           <main className='h-full font-inter antialiased bg-slate-100 text-slate-600'>
             <div className='px-4 sm:px-6 lg:px-8 w-full max-w-9xl mx-auto'>
@@ -445,14 +470,19 @@ export default function Home({ resource, object, template }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   try {
     const baseUrl =
       process.env.NODE_ENV === 'production'
         ? 'https://wialon-next.vercel.app'
         : 'http://localhost:3000';
     const first = 'wialon_first';
-    const res = await axios.post(`${baseUrl}/api/wialon`, { first });
+    const cookies = parseCookies(context);
+    const accessToken = cookies.accessToken;
+    const res = await axios.post(`${baseUrl}/api/wialon`, {
+      first,
+      accessToken,
+    });
     //console.log(res);
     return {
       props: {
