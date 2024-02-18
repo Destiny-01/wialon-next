@@ -15,10 +15,12 @@ import axios from 'axios';
 import { useAuth } from '@/utils/useAuth';
 import { parseCookies, destroyCookie } from 'nookies';
 
-export default function Home({ resource, object, template }) {
+export default function Home({ resource, object, template, username }) {
   useAuth();
 
   const router = useRouter();
+
+  console.log('username', username);
 
   const baseUrl =
     process.env.NODE_ENV === 'production'
@@ -443,6 +445,7 @@ export default function Home({ resource, object, template }) {
                       selectedDates={selectedDates}
                       selectedFromDate={selectedFromDate}
                       selectedToDate={selectedToDate}
+                      username={username}
                     />
                   ) : (
                     <p>No data generated</p>
@@ -489,6 +492,7 @@ export async function getServerSideProps(context) {
         resource: res.data.response[0].items,
         object: res.data.response[1],
         template: res.data.response[2],
+        username: res.data.response[3].au,
       },
     };
   } catch (err) {
@@ -498,6 +502,7 @@ export async function getServerSideProps(context) {
         resource: [],
         object: [],
         template: [],
+        username: null,
       },
     };
   }

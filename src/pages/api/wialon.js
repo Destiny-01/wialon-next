@@ -48,6 +48,10 @@ export default async function handler(req, res) {
               ],
             },
           },
+          {
+            svc: 'token/login',
+            params: { token: req.body.accessToken },
+          },
         ],
         flags: 0,
       };
@@ -56,7 +60,7 @@ export default async function handler(req, res) {
         .request('core/batch', params)
         .then(async function (data) {
           response = data;
-          ///console.log(data);
+          //console.log(data);
         })
         .catch(function (err) {
           console.log(err);
@@ -181,7 +185,7 @@ export default async function handler(req, res) {
             await Promise.all(
               result.map(async (res) => {
                 //console.log('res2', res);
-                console.log('res', res);
+                //console.log('res', res);
                 if (res.c[5] >= 1) {
                   const requestTable2 = {
                     tableIndex: 4,
@@ -196,7 +200,7 @@ export default async function handler(req, res) {
                     requestTable2
                   );
 
-                  console.log('data', data);
+                  //console.log('data', data);
 
                   data.forEach((r) => {
                     output[1] = output[1].map((o) => {

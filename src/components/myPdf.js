@@ -16,7 +16,7 @@ Font.register({
 });
 
 // Create Document Component
-export const MyDocument = ({ data, fileName }) => {
+export const MyDocument = ({ data, name }) => {
   let backgroundcolor = useRef('');
   const styles = StyleSheet.create({
     page: {
@@ -130,7 +130,9 @@ export const MyDocument = ({ data, fileName }) => {
         </View>
       </View> */}
         <View style={styles.section}>
-          <Text style={styles.header}>Drivers Performance Report</Text>
+          <Text style={styles.header}>
+            Drivers Performance Report of {name}
+          </Text>
           <View style={styles.tableHeader}>
             <Text style={styles.tableDriverName}>Driver Name</Text>
             <Text style={styles.tableCell}>Driver Score</Text>
