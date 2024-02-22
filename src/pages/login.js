@@ -42,8 +42,10 @@ export default function Login() {
       console.log('Access Token ', token);
 
       // save token in cookies
-      localStorage.setItem('accessToken', token);
-      setCookie(null, 'accessToken', token, { path: '/' });
+      setCookie(null, 'accessToken', token, {
+        maxAge: 600, // 10 minutes in seconds
+        path: '/',
+      });
 
       // remove "message" event listener
       window.removeEventListener('message', tokenRecieved);

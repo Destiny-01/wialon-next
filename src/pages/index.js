@@ -14,6 +14,7 @@ import styles from '@/styles/DatePicker.module.css';
 import axios from 'axios';
 import { useAuth } from '@/utils/useAuth';
 import { parseCookies, destroyCookie } from 'nookies';
+import { set } from 'date-fns';
 
 export default function Home({ resource, object, template, username }) {
   useAuth();
@@ -33,8 +34,7 @@ export default function Home({ resource, object, template, username }) {
   const [groupId, setGroupId] = useState('');
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const [selectedFromDate, setSelectedFromDate] = useState(null);
-  const [selectedToDate, setSelectedToDate] = useState(null);
+  const [dates, setDates] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
 
   const onOptionChangeHandler = (event) => {
@@ -81,6 +81,7 @@ export default function Home({ resource, object, template, username }) {
 
   const toggleShowTable = async () => {
     setLoading(true);
+    setTableData(null);
 
     const params = {
       reportResourceId: parseInt(resourceId),
@@ -119,7 +120,16 @@ export default function Home({ resource, object, template, username }) {
         console.log(err);
         setLoading(false);
       });
-    setTableData(res.data.response);
+    setTableData(res?.data.response);
+    resetSelect();
+  };
+
+  const resetSelect = () => {
+    setResourceId('');
+    setTemplateId('');
+    setGroupId('');
+    setDates(selectedDates);
+    setSelectedDates(null);
     setLoading(false);
   };
 
@@ -127,6 +137,10 @@ export default function Home({ resource, object, template, username }) {
     console.log(event.target.value);
     setInterval(event.target.value);
   };
+
+  setTimeout(() => {
+    signOut();
+  }, 10 * 60 * 1000);
 
   const signOut = () => {
     destroyCookie(null, 'accessToken');
@@ -152,9 +166,8 @@ export default function Home({ resource, object, template, username }) {
       instance.element.value = dateStr.replace('to', '-');
     },
   };
+
   console.log(selectedDates);
-  console.log(selectedFromDate);
-  console.log(selectedToDate);
 
   return (
     <>
@@ -208,8 +221,9 @@ export default function Home({ resource, object, template, username }) {
                     <select
                       id='res'
                       className='js-example-templating js-persons form-select'
-                      onChange={onOptionChangeHandler}>
-                      <option>Please choose one option</option>
+                      onChange={onOptionChangeHandler}
+                      value={resourceId}>
+                      <option value=''>Please choose one option</option>
                       {resource.map((item) => (
                         <option value={item.id} key={item.id}>
                           {item.nm}
@@ -228,8 +242,9 @@ export default function Home({ resource, object, template, username }) {
                     <select
                       id='res'
                       className='js-example-templating js-persons form-select'
-                      onChange={onOptionChangeHandlerTemplate}>
-                      <option>Please choose one option</option>
+                      onChange={onOptionChangeHandlerTemplate}
+                      value={templateId}>
+                      <option value=''>Please choose one option</option>
                       {report &&
                         Object.keys(report).map((key) => (
                           <option value={report[key].id} key={report[key].id}>
@@ -251,8 +266,9 @@ export default function Home({ resource, object, template, username }) {
                     <select
                       id='units'
                       className='js-example-templating js-persons form-select'
-                      onChange={onOptionChangeHandlerGroup}>
-                      <option>Please choose one option</option>
+                      onChange={onOptionChangeHandlerGroup}
+                      value={groupId}>
+                      <option value=''>Please choose one option</option>
                       {group &&
                         Object.keys(group).map((key) => (
                           <option value={group[key].id} key={group[key].id}>
@@ -442,9 +458,7 @@ export default function Home({ resource, object, template, username }) {
                   {tableData?.length > 0 ? (
                     <DriverTable
                       tableData={tableData}
-                      selectedDates={selectedDates}
-                      selectedFromDate={selectedFromDate}
-                      selectedToDate={selectedToDate}
+                      selectedDates={dates}
                       username={username}
                     />
                   ) : (

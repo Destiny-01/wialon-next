@@ -26,13 +26,7 @@ const getBackgroundColorClass = (driverScore) => {
   }
 };
 
-const DriverTable = ({
-  tableData,
-  selectedFromDate,
-  selectedToDate,
-  selectedDates,
-  username,
-}) => {
+const DriverTable = ({ tableData, selectedDates, username }) => {
   //console.log(tableData);
   console.log('selected Dates', selectedDates);
 
